@@ -1,0 +1,5 @@
+ai-gen
+writable/cache/*
+writable/logs/*
+writable/session/*
+writable/uploads/*
