@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Products;
 
 use App\Models\StockMovementModel;
 use CodeIgniter\API\ResponseTrait;
+use CodeIgniter\Controller;
 
-class StockMovementController extends BaseController
+class StockMovementController extends Controller
 {
     use ResponseTrait;
 

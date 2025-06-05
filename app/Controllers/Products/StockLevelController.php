@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Products;
 
 use App\Models\StockLevelModel;
 use CodeIgniter\API\ResponseTrait;
+use CodeIgniter\Controller;
 
-class StockLevelController extends BaseController
+class StockLevelController extends Controller
 {
     use ResponseTrait;
 

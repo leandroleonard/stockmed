@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Products;
 
 use App\Models\ProductModel;
 use CodeIgniter\API\ResponseTrait;
+use CodeIgniter\Controller;
 
-class ProductController extends BaseController
+class ProductController extends Controller
 {
     use ResponseTrait;
 

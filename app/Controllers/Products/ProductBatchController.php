@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Products;
 
 use App\Models\ProductBatchModel;
 use CodeIgniter\API\ResponseTrait;
+use CodeIgniter\Controller;
 
-class ProductBatchController extends BaseController
+class ProductBatchController extends Controller
 {
     use ResponseTrait;
 
