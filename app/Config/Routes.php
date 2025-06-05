@@ -19,3 +19,5 @@ $routes->group('/dashboard', function ($routes) {
     $routes->get('sales', 'SalesController::index');
     $routes->get('suppliers', 'SupplierController::index');
 });
+
+include 'RoutesTest.php';
