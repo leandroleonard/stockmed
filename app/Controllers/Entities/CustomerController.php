@@ -5,7 +5,6 @@ namespace App\Controllers\Entities;
 use App\Controllers\BaseController;
 use App\Models\CustomerModel;
 use App\Models\ActivityLogModel;
-use CodeIgniter\HTTP\ResponseInterface;
 
 class CustomerController extends BaseController
 {
