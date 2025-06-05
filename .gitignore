@@ -3,3 +3,4 @@ writable/cache/*
 writable/logs/*
 writable/session/*
 writable/uploads/*
+.env
