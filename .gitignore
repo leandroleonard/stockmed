@@ -3,6 +3,7 @@ writable/cache/*
 writable/logs/*
 writable/session/*
 writable/uploads/*
+writable/debugbar/*
 .env
 app/Controllers/Test
 app/Config/RoutesTest.php
