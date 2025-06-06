@@ -97,6 +97,19 @@ CREATE TABLE suppliers (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+DELIMITER ;;
+
+CREATE TRIGGER `trg_insert_suppliers`
+BEFORE INSERT ON `suppliers`
+FOR EACH ROW
+BEGIN
+    IF (NEW.`supplier_code` IS NULL OR NEW.`supplier_code` = '') THEN
+        SET NEW.`supplier_code` = SUBSTRING(REPLACE(UUID(), '-', ''), 1, 20);
+    END IF;
+END;;
+
+DELIMITER ;
+
 -- Tabela de armazéns
 CREATE TABLE warehouses (
     id INT PRIMARY KEY AUTO_INCREMENT,
