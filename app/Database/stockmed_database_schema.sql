@@ -63,6 +63,20 @@ CREATE TABLE customers (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+DELIMITER ;;
+
+CREATE TRIGGER `trg_insert_customers`
+BEFORE INSERT ON `customers`
+FOR EACH ROW
+BEGIN
+    IF (NEW.`customer_code` IS NULL OR NEW.`customer_code` = '') THEN
+        SET NEW.`customer_code` = SUBSTRING(REPLACE(UUID(), '-', ''), 1, 20);
+    END IF;
+END;;
+
+DELIMITER ;
+
+
 -- Tabela de fornecedores
 CREATE TABLE suppliers (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -421,5 +435,6 @@ INSERT INTO product_categories (name, description) VALUES
 
 -- Inserir armazém padrão
 INSERT INTO warehouses (warehouse_code, name, description, is_active) VALUES
-('ARM001', 'Armazém Principal', 'Armazém principal da farmácia', TRUE);
+('ARM002', 'Armazém Talatona', 'Armazém principal da farmácia', TRUE),
+('ARM001', 'Armazém Kilamba', 'Armazém secundário', TRUE);
 
