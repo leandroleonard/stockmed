@@ -130,6 +130,19 @@ CREATE TABLE warehouses (
     FOREIGN KEY (manager_id) REFERENCES users(id)
 );
 
+DELIMITER ;;
+
+CREATE TRIGGER `trg_insert_warehouses`
+BEFORE INSERT ON `warehouses`
+FOR EACH ROW
+BEGIN
+    IF (NEW.`warehouse_code` IS NULL OR NEW.`warehouse_code` = '') THEN
+        SET NEW.`warehouse_code` = SUBSTRING(REPLACE(UUID(), '-', ''), 1, 20);
+    END IF;
+END;;
+
+DELIMITER ;
+
 -- =============================================
 -- TABELAS DE PRODUTOS FARMACÊUTICOS
 -- =============================================
@@ -186,6 +199,19 @@ CREATE TABLE products (
     FOREIGN KEY (category_id) REFERENCES product_categories(id),
     FOREIGN KEY (manufacturer_id) REFERENCES manufacturers(id)
 );
+
+DELIMITER ;;
+
+CREATE TRIGGER `trg_insert_products`
+BEFORE INSERT ON `products`
+FOR EACH ROW
+BEGIN
+    IF (NEW.`product_code` IS NULL OR NEW.`product_code` = '') THEN
+        SET NEW.`product_code` = SUBSTRING(REPLACE(UUID(), '-', ''), 1, 20);
+    END IF;
+END;;
+
+DELIMITER ;
 
 -- Tabela de lotes de produtos
 CREATE TABLE product_batches (
@@ -278,6 +304,19 @@ CREATE TABLE purchase_orders (
     FOREIGN KEY (approved_by) REFERENCES users(id)
 );
 
+DELIMITER ;;
+
+CREATE TRIGGER `trg_insert_purchase_orders`
+BEFORE INSERT ON `purchase_orders`
+FOR EACH ROW
+BEGIN
+    IF (NEW.`order_number` IS NULL OR NEW.`order_number` = '') THEN
+        SET NEW.`order_number` = SUBSTRING(REPLACE(UUID(), '-', ''), 1, 20);
+    END IF;
+END;;
+
+DELIMITER ;
+
 -- Tabela de itens do pedido de compra
 CREATE TABLE purchase_order_items (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -320,6 +359,19 @@ CREATE TABLE sales (
     FOREIGN KEY (cashier_id) REFERENCES users(id)
 );
 
+DELIMITER ;;
+
+CREATE TRIGGER `trg_insert_sales`
+BEFORE INSERT ON `sales`
+FOR EACH ROW
+BEGIN
+    IF (NEW.`sale_number` IS NULL OR NEW.`sale_number` = '') THEN
+        SET NEW.`sale_number` = SUBSTRING(REPLACE(UUID(), '-', ''), 1, 20);
+    END IF;
+END;;
+
+DELIMITER ;
+
 -- Tabela de itens da venda
 CREATE TABLE sale_items (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -355,6 +407,19 @@ CREATE TABLE inventories (
     FOREIGN KEY (created_by) REFERENCES users(id),
     FOREIGN KEY (completed_by) REFERENCES users(id)
 );
+
+DELIMITER ;;
+
+CREATE TRIGGER `trg_insert_inventories`
+BEFORE INSERT ON `inventories`
+FOR EACH ROW
+BEGIN
+    IF (NEW.`inventory_number` IS NULL OR NEW.`inventory_number` = '') THEN
+        SET NEW.`inventory_number` = SUBSTRING(REPLACE(UUID(), '-', ''), 1, 32);
+    END IF;
+END;;
+
+DELIMITER ;
 
 -- Tabela de itens do inventário
 CREATE TABLE inventory_items (
