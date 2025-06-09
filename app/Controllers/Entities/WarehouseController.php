@@ -60,6 +60,7 @@ class WarehouseController extends BaseController
         $warehouses = $this->warehouseModel->getWarehousesWithFilters($filters, $page, $perPage);
         $total = $this->warehouseModel->getWarehousesCount($filters);
 
+        return view('storage/index');
         return $this->response->setJSON([
             'success' => true,
             'data' => $warehouses,

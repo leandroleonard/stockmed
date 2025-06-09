@@ -25,73 +25,55 @@
 
 
     <div class="row">
-    <div class="col-sm-12">
-        <div class="card">
-            <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Clientes</h5>
-                <a href="<?= base_url('dashboard/clients/create') ?>" class="btn btn-sm btn-primary"> <span class="fa fa-plus me-2"></span>Criar</a>
-            </div>
-            <div class="card-body">
-                <div class="dt-responsive table-responsive">
-                    <table id="tabela-clientes" class="table table-striped table-bordered nowrap">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nome</th>
-                                <th>Morada</th>
-                                <th>Email</th>
-                                <th>NIF</th>
-                                <th><span class="fa fa-cog text-primary"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>João Manuel</td>
-                                <td>Luanda, Maianga</td>
-                                <td>joao@email.com</td>
-                                <td>123456789</td>
-                                <td>
-                                    <a href="#" class="btn btn-sm btn-primary">Editar</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Ana Silva</td>
-                                <td>Benguela, Lobito</td>
-                                <td>ana.silva@email.com</td>
-                                <td>987654321</td>
-                                <td>
-                                    <a href="#" class="btn btn-sm btn-primary">Editar</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Carlos Pedro</td>
-                                <td>Huambo</td>
-                                <td>carlosp@email.com</td>
-                                <td>192837465</td>
-                                <td>
-                                    <a href="#" class="btn btn-sm btn-primary">Editar</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nome</th>
-                                <th>Morada</th>
-                                <th>Email</th>
-                                <th>NIF</th>
-                                <th><span class="fa fa-cog text-primary"></span></th>
-                            </tr>
-                        </tfoot>
-                    </table>
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h5>Clientes</h5>
+                    <a href="<?= base_url('dashboard/clients/create') ?>" class="btn btn-sm btn-primary"> <span class="fa fa-plus me-2"></span>Criar</a>
+                </div>
+                <div class="card-body">
+                    <div class="dt-responsive table-responsive">
+                        <table id="tabela-clientes" class="table table-striped table-bordered nowrap">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Morada</th>
+                                    <th>Email</th>
+                                    <th>NIF</th>
+                                    <th><span class="fa fa-cog text-primary"></span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($customers as $customer): ?>
+                                    <tr>
+                                        <td><?= $customer['id'] ?></td>
+                                        <td><?= $customer['first_name'] . ' ' . $customer['last_name'] ?></td>
+                                        <td><?= $customer['address'] ?></td>
+                                        <td><?= $customer['email'] ?></td>
+                                        <td><?= $customer['phone'] ?></td>
+                                        <td>
+                                            <a href="#" class="btn btn-sm btn-primary">Editar</a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach ?>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Morada</th>
+                                    <th>Email</th>
+                                    <th>NIF</th>
+                                    <th><span class="fa fa-cog text-primary"></span></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 </div>
 <?= $this->endSection() ?>
