@@ -512,7 +512,8 @@ INSERT INTO product_categories (name, description) VALUES
 ('Material Médico', 'Equipamentos e materiais médicos');
 
 -- Inserir armazém padrão
-INSERT INTO warehouses (warehouse_code, name, description, is_active) VALUES
-('ARM002', 'Armazém Talatona', 'Armazém principal da farmácia', TRUE),
-('ARM001', 'Armazém Kilamba', 'Armazém secundário', TRUE);
+INSERT INTO warehouses (warehouse_code, name, description, is_active, city, manager_id) VALUES
+('', 'Armazém Talatona - Depósito Principal', 'Armazém principal da farmácia', TRUE, 'Luanda', 7),
+('', 'Armazém - Câmara Fria', 'Armazém refrigerado para medicamentos termolábeis', TRUE, 'Luanda', 9),
+('', 'Armazém Kilamba - Loja Balcão', 'Estoque da área de vendas', TRUE, 'Luanda', 8);
 

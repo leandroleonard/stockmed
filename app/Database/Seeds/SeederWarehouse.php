@@ -17,7 +17,8 @@ class SeederWarehouse extends Seeder
                 'created_at' => Time::now(),
                 'updated_at' => Time::now(),
                 'city' => 'Luanda',
-                'manager_id' => 1
+                'manager_id' => 1,
+                'warehouse_code' => ''
             ],
             [
                 'name' => 'Câmara Fria',
@@ -25,7 +26,8 @@ class SeederWarehouse extends Seeder
                 'description' => 'Armazém refrigerado para medicamentos termolábeis',
                 'created_at' => Time::now(),
                 'updated_at' => Time::now(),
-                'manager_id' => 3
+                'manager_id' => 3,
+                'warehouse_code' => ''
             ],
             [
                 'name' => 'Loja - Balcão',
@@ -34,7 +36,8 @@ class SeederWarehouse extends Seeder
                 'created_at' => Time::now(),
                 'updated_at' => Time::now(),
                 'city' => 'Luanda',
-                'manager_id' => 2
+                'manager_id' => 2,
+                'warehouse_code' => ''
             ]
         ];
         $this->db->table('warehouses')->insertBatch($warehouses);
