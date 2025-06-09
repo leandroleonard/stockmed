@@ -20,8 +20,8 @@ $routes->group('/dashboard', ['filter' => 'auth'], function ($routes) {
     $routes->get('suppliers', 'SupplierController::index');
 });
 
-$routes->get('login', 'AuthController::login');
-$routes->post('login', 'AuthController::authenticate');
-$routes->get('logout', 'AuthController::logout');
+$routes->get('login', 'Auth\AuthController::login');
+$routes->post('login', 'Auth\AuthController::authenticate');
+$routes->get('logout', 'Auth\AuthController::logout');
 
 include 'RoutesTest.php';

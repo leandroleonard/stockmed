@@ -24,9 +24,9 @@ class ActivityLogModel extends Model
     ];
 
     // Dates
-    protected $useTimestamps = true;
-    protected $dateFormat = 'datetime';
-    protected $createdField = 'created_at';
+    // protected $useTimestamps = true;
+    // protected $dateFormat = 'datetime';
+    // protected $createdField = 'created_at';
 
     // Validation
     protected $validationRules = [

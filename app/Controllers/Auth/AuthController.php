@@ -26,7 +26,6 @@ class AuthController extends BaseController
      */
     public function login()
     {
-        // Se já estiver logado, redirecionar para dashboard
         if (session()->get('isLoggedIn')) {
             return redirect()->to('/dashboard');
         }
@@ -34,49 +33,53 @@ class AuthController extends BaseController
         return view('auth/login');
     }
 
-    /**
-     * Processa login
-     */
     public function authenticate()
     {
         $rules = [
-            'username' => 'required',
-            'password' => 'required|min_length[6]'
+            'email' => 'required',
+            'password' => 'required'
         ];
 
+        $request = service('request');
+        $wantsJson = strpos($request->getHeaderLine('Accept'), 'application/json') !== false;
+
         if (!$this->validate($rules)) {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Dados inválidos',
-                'errors' => $this->validator->getErrors()
-            ]);
+            if ($wantsJson) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Dados inválidos',
+                    'errors' => $this->validator->getErrors()
+                ]);
+            } else {
+                return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+            }
         }
 
-        $username = $this->request->getPost('username');
+        $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
 
-        // Verificar credenciais
-        $user = $this->userModel->verifyCredentials($username, $password);
+        $user = $this->userModel->verifyCredentials($email, $password);
 
         if (!$user) {
-            // Log tentativa de login falhada
             $this->activityModel->logActivity(
                 null,
-                'Login falhado: ' . $username,
+                'Login falhado: ' . $email,
                 'users',
                 null
             );
 
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Credenciais inválidas'
-            ]);
+            if ($wantsJson) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Credenciais inválidas'
+                ]);
+            } else {
+                return redirect()->back()->withInput()->with('error', 'Credenciais inválidas');
+            }
         }
 
-        // Buscar dados completos do usuário com role
         $userWithRole = $this->userModel->getUserWithRole($user['id']);
 
-        // Criar sessão
         $sessionData = [
             'user_id' => $user['id'],
             'username' => $user['username'],
@@ -91,10 +94,8 @@ class AuthController extends BaseController
 
         session()->set($sessionData);
 
-        // Atualizar último login
         $this->userModel->updateLastLogin($user['id']);
 
-        // Log login bem-sucedido
         $this->activityModel->logActivity(
             $user['id'],
             'Login realizado',
@@ -102,11 +103,14 @@ class AuthController extends BaseController
             $user['id']
         );
 
-        return $this->response->setJSON([
-            'success' => true,
-            'message' => 'Login realizado com sucesso',
-            'redirect' => base_url('/dashboard')
-        ]);
+        if ($wantsJson) {
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Login realizado com sucesso',
+                'redirect' => base_url('/dashboard')
+            ]);
+        }
+        return redirect()->to(base_url('/dashboard'));
     }
 
     /**
@@ -138,7 +142,7 @@ class AuthController extends BaseController
     public function checkAuth()
     {
         $isLoggedIn = session()->get('isLoggedIn');
-        
+
         return $this->response->setJSON([
             'authenticated' => (bool)$isLoggedIn,
             'user' => $isLoggedIn ? [
@@ -249,7 +253,7 @@ class AuthController extends BaseController
 
         // Salvar token (você pode criar uma tabela password_resets)
         // Por enquanto, vamos simular o envio do email
-        
+
         // Log tentativa de recuperação
         $this->activityModel->logActivity(
             null,
