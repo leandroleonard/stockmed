@@ -41,7 +41,7 @@
             transition: background 0.2s, color 0.2s;
         }
         .cta-btn:hover {
-            background: #43a047;
+            background: rgb(2, 91, 175);
             color: #fff;
         }
         .features {
