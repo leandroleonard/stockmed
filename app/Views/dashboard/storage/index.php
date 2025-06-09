@@ -38,26 +38,23 @@
                         <table id="simpletable" class="table table-striped table-bordered nowrap">
                             <thead>
                                 <tr>
+                                    <th>Code</th>
+                                    <th>Name</th>
                                     <th>Descrição</th>
-                                    <th>Localização</th>
                                     <th><span class="fa fa-cog text-primary"></span></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Armazem 1</td>
-                                    <td>Luanda, Angola</td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-primary">Editar</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Armazem 1</td>
-                                    <td>Luanda, Angola</td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-primary">Editar</a>
-                                    </td>
-                                </tr>
+                                <?php foreach ($warehouses as $warehouse): ?>
+                                    <tr>
+                                        <td><?= $warehouse['warehouse_code'] ?></td>
+                                        <td><?= $warehouse['name'] ?></td>
+                                        <td><?= $warehouse['description'] ?></td>
+                                        <td>
+                                            <a href="#" class="btn btn-sm btn-primary">Editar</a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach ?>
                             </tbody>
                             <tfoot>
                                 <tr>
