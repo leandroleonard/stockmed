@@ -25,8 +25,8 @@
             <div class="card">
                 <div class="card-body">
                     <h6 class="mb-2 f-w-400 text-muted">Total em stock</h6>
-                    <h4 class="mb-3">4,236 <span class="badge bg-light-primary border border-primary"><i
-                                class="ti ti-trending-up"></i> 59.3%</span></h4>
+                    <h4 class="mb-3"><?= esc($totalStock) ?> <span class="badge bg-light-primary border border-primary"><i
+                                class="ti ti-trending-up"></i></span></h4>
                 </div>
             </div>
         </div>
@@ -34,8 +34,8 @@
             <div class="card">
                 <div class="card-body">
                     <h6 class="mb-2 f-w-400 text-muted">Cliente</h6>
-                    <h4 class="mb-3">1,250 <span class="badge bg-light-success border border-success"><i
-                                class="ti ti-trending-up"></i> 70.5%</span></h4>
+                    <h4 class="mb-3"><?= esc($totalClients) ?> <span class="badge bg-light-success border border-success"><i
+                                class="ti ti-trending-up"></i></span></h4>
                 </div>
             </div>
         </div>
@@ -43,8 +43,8 @@
             <div class="card">
                 <div class="card-body">
                     <h6 class="mb-2 f-w-400 text-muted">Vendas no mês</h6>
-                    <h4 class="mb-3">8,800 <span class="badge bg-light-warning border border-warning"><i
-                                class="ti ti-trending-down"></i> 27.4%</span></h4>
+                    <h4 class="mb-3"><?= esc($salesThisMonth) ?> <span class="badge bg-light-warning border border-warning"><i
+                                class="ti ti-trending-down"></i></span></h4>
                 </div>
             </div>
         </div>
@@ -52,9 +52,8 @@
             <div class="card">
                 <div class="card-body">
                     <h6 class="mb-2 f-w-400 text-muted">Total em vendas</h6>
-                    <h4 class="mb-3">+3M <span class="badge bg-light-danger border border-danger"><i
-                                class="ti ti-trending-down"></i> 27.4%</span></h4>
-                    </p>
+                    <h4 class="mb-3"><?= number_format($totalSalesValue, 2, ',', '.') ?> KZ <span class="badge bg-light-danger border border-danger"><i
+                                class="ti ti-trending-down"></i></span></h4>
                 </div>
             </div>
         </div>
@@ -75,38 +74,21 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><a href="#" class="text-muted">84564564</a></td>
-                                    <td>António José</td>
-                                    <td>Aspirina</td>
-                                    <td>2</td>
-                                    </td>
-                                    <td class="text-end">5.000 KZ</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="#" class="text-muted">84564564</a></td>
-                                    <td>Júlia Baptista</td>
-                                    <td>Clavamox 500mg</td>
-                                    <td>1</td>
-                                    </td>
-                                    <td class="text-end">3.500 KZ</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="#" class="text-muted">84564564</a></td>
-                                    <td>Miguel</td>
-                                    <td>Paracetamol </td>
-                                    <td>1</td>
-                                    <td class="text-end">1.500 KZ</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="#" class="text-muted">84564564</a></td>
-                                    <td>Ana Santos</td>
-                                    <td>Paracetamol</td>
-                                    <td>10</td>
-                                    </td>
-                                    <td class="text-end">15.000 KZ</td>
-                                </tr>
-
+                                <?php if (!empty($lastSales)): ?>
+                                    <?php foreach ($lastSales as $sale): ?>
+                                        <tr>
+                                            <td><a href="#" class="text-muted"><?= esc($sale['id']) ?></a></td>
+                                            <td><?= esc($sale['first_name']) . ' ' . esc($sale['last_name']) ?></td>
+                                            <td><?= esc($sale['product']) ?></td>
+                                            <td><?= esc($sale['quantity']) ?></td>
+                                            <td class="text-end"><?= number_format($sale['total_amount'], 2, ',', '.') ?> KZ</td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="5" class="text-center">Nenhuma venda encontrada.</td>
+                                    </tr>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
