@@ -7,7 +7,8 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Home::index');
 
-$routes->group('/dashboard', function ($routes) {
+// Aplica o filtro 'auth' a todo o grupo dashboard
+$routes->group('/dashboard', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'DashboardController::index');
     $routes->get('storage', 'StorageController::index');
     $routes->get('stock', 'ProductController::index');
@@ -19,5 +20,10 @@ $routes->group('/dashboard', function ($routes) {
     $routes->get('sales', 'SalesController::index');
     $routes->get('suppliers', 'SupplierController::index');
 });
+
+// Rotas de autenticação (sem filtro)
+$routes->get('login', 'AuthController::login');
+$routes->post('login', 'AuthController::authenticate');
+$routes->get('logout', 'AuthController::logout');
 
 include 'RoutesTest.php';
