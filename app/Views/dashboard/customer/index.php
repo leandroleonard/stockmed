@@ -40,7 +40,7 @@
                                     <th>Nome</th>
                                     <th>Morada</th>
                                     <th>Email</th>
-                                    <th>NIF</th>
+                                    <th>Telefone</th>
                                     <th><span class="fa fa-cog text-primary"></span></th>
                                 </tr>
                             </thead>
