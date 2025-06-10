@@ -57,20 +57,7 @@ class CustomerModel extends Model
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert = ['generateCustomerCode'];
 
-    /**
-     * Gera código do cliente automaticamente
-     */
-    protected function generateCustomerCode(array $data)
-    {
-        if (empty($data['data']['customer_code'])) {
-            $lastCustomer = $this->orderBy('id', 'DESC')->first();
-            $nextId = $lastCustomer ? $lastCustomer['id'] + 1 : 1;
-            $data['data']['customer_code'] = 'CLI' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
-        }
-        return $data;
-    }
 
     /**
      * Busca clientes ativos

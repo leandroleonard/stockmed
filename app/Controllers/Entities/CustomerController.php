@@ -23,7 +23,7 @@ class CustomerController extends BaseController
     public function initController(\CodeIgniter\HTTP\RequestInterface $request, \CodeIgniter\HTTP\ResponseInterface $response, \Psr\Log\LoggerInterface $logger)
     {
         parent::initController($request, $response, $logger);
-        
+
         if (!session()->get('isLoggedIn')) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Acesso negado');
         }
@@ -43,11 +43,11 @@ class CustomerController extends BaseController
 
         // Filtros
         $filters = [];
-        
+
         if ($this->request->getGet('status')) {
             $filters['is_active'] = $this->request->getGet('status') === 'active';
         }
-        
+
         if ($this->request->getGet('type')) {
             $filters['customer_type'] = $this->request->getGet('type');
         }
@@ -103,93 +103,95 @@ class CustomerController extends BaseController
      */
     public function create()
     {
+        $request = service('request');
+        $wantsJson = strpos($request->getHeaderLine('Accept'), 'application/json') !== false;
+
         if (!$this->hasPermission('customers_create')) {
-            return $this->response->setStatusCode(403)->setJSON([
-                'success' => false,
-                'message' => 'Sem permissão para criar clientes'
-            ]);
+            if ($wantsJson) {
+                return $this->response->setStatusCode(403)->setJSON([
+                    'success' => false,
+                    'message' => 'Sem permissão para criar clientes'
+                ]);
+            } else {
+                // Redireciona com mensagem de erro
+                return redirect()->back()->with('error', 'Sem permissão para criar clientes');
+            }
         }
 
+
         $rules = [
-            'name' => 'required|max_length[255]',
-            'customer_type' => 'required|in_list[individual,company]',
-            'document_number' => 'permit_empty|max_length[20]',
+            'first_name' => 'required|max_length[255]',
+            'last_name' => 'required|max_length[255]',
             'email' => 'permit_empty|valid_email|max_length[255]',
-            'phone' => 'permit_empty|max_length[20]',
-            'mobile' => 'permit_empty|max_length[20]',
+            'phone' => 'permit_empty|max_length[9]',
             'address' => 'permit_empty|string',
             'city' => 'permit_empty|max_length[100]',
-            'state' => 'permit_empty|max_length[100]',
             'postal_code' => 'permit_empty|max_length[20]',
-            'country' => 'permit_empty|max_length[100]',
-            'birth_date' => 'permit_empty|valid_date',
-            'gender' => 'permit_empty|in_list[M,F,Other]',
             'notes' => 'permit_empty|string'
         ];
 
         if (!$this->validate($rules)) {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Dados inválidos',
-                'errors' => $this->validator->getErrors()
-            ]);
-        }
-
-        // Verificar se documento já existe (se fornecido)
-        $documentNumber = $this->request->getPost('document_number');
-        if (!empty($documentNumber)) {
-            $existing = $this->customerModel->where('document_number', $documentNumber)->first();
-            if ($existing) {
+            if ($wantsJson) {
                 return $this->response->setJSON([
                     'success' => false,
-                    'message' => 'Já existe um cliente com este documento'
+                    'message' => 'Dados inválidos',
+                    'errors' => $this->validator->getErrors()
                 ]);
+            } else {
+                echo "<pre>";
+                
+                return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
             }
         }
 
+
+
         $data = [
-            'customer_code' => $this->customerModel->generateCustomerCode(),
-            'name' => $this->request->getPost('name'),
-            'customer_type' => $this->request->getPost('customer_type'),
-            'document_number' => $documentNumber,
+            'first_name' => $this->request->getPost('first_name'),
+            'last_name' => $this->request->getPost('last_name'),
             'email' => $this->request->getPost('email'),
             'phone' => $this->request->getPost('phone'),
-            'mobile' => $this->request->getPost('mobile'),
             'address' => $this->request->getPost('address'),
             'city' => $this->request->getPost('city'),
-            'state' => $this->request->getPost('state'),
-            'postal_code' => $this->request->getPost('postal_code'),
-            'country' => $this->request->getPost('country') ?: 'Brasil',
-            'birth_date' => $this->request->getPost('birth_date') ?: null,
-            'gender' => $this->request->getPost('gender'),
             'notes' => $this->request->getPost('notes'),
             'is_active' => true
         ];
 
         $customerId = $this->customerModel->insert($data);
 
+        // exit(var_dump($this->customerModel->errors()));
+
         if ($customerId) {
-            // Log criação
             $this->activityModel->logActivity(
                 session()->get('user_id'),
-                'Cliente criado: ' . $data['name'],
+                'Cliente criado: ' . $data['first_name'] . '' . $data['last_name'],
                 'customers',
                 $customerId,
                 null,
                 $data
             );
 
-            return $this->response->setJSON([
-                'success' => true,
-                'message' => 'Cliente criado com sucesso',
-                'data' => ['id' => $customerId, 'customer_code' => $data['customer_code']]
-            ]);
+            if ($wantsJson) {
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => 'Cliente criado com sucesso',
+                    'data' => ['id' => $customerId, 'customer_code' => $data['customer_code']]
+                ]);
+            } else {
+                // Redireciona com mensagem de sucesso e os dados do cliente
+                return redirect()->back()->withInput()->with('success', 'Cliente criado com sucesso!');
+            }
         }
 
-        return $this->response->setJSON([
-            'success' => false,
-            'message' => 'Erro ao criar cliente'
-        ]);
+        if ($wantsJson) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Erro ao criar cliente'
+            ]);
+        } else {
+            // Redireciona com mensagem de erro
+            return redirect()->back()->withInput()->with('error', 'Erro ao criar cliente');
+        }
     }
 
     /**
@@ -241,8 +243,8 @@ class CustomerController extends BaseController
         $documentNumber = $this->request->getPost('document_number');
         if (!empty($documentNumber)) {
             $existing = $this->customerModel->where('document_number', $documentNumber)
-                                          ->where('id !=', $id)
-                                          ->first();
+                ->where('id !=', $id)
+                ->first();
             if ($existing) {
                 return $this->response->setJSON([
                     'success' => false,
@@ -318,7 +320,7 @@ class CustomerController extends BaseController
 
         if ($updated) {
             $action = $newStatus ? 'ativado' : 'desativado';
-            
+
             // Log alteração
             $this->activityModel->logActivity(
                 session()->get('user_id'),
@@ -408,7 +410,7 @@ class CustomerController extends BaseController
         }
 
         $term = $this->request->getGet('term');
-        
+
         if (empty($term)) {
             return $this->response->setJSON([
                 'success' => false,
@@ -507,15 +509,15 @@ class CustomerController extends BaseController
     private function exportToCsv($customers)
     {
         $filename = 'clientes_' . date('Y-m-d_H-i-s') . '.csv';
-        
+
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
-        
+
         $output = fopen('php://output', 'w');
-        
+
         // BOM para UTF-8
-        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
-        
+        fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
         // Cabeçalhos
         fputcsv($output, [
             'Código',
@@ -529,7 +531,7 @@ class CustomerController extends BaseController
             'Estado',
             'Data Cadastro'
         ], ';');
-        
+
         // Dados
         foreach ($customers as $customer) {
             fputcsv($output, [
@@ -545,7 +547,7 @@ class CustomerController extends BaseController
                 date('d/m/Y', strtotime($customer['created_at']))
             ], ';');
         }
-        
+
         fclose($output);
         exit;
     }
@@ -556,7 +558,7 @@ class CustomerController extends BaseController
     private function hasPermission($permission)
     {
         $permissions = session()->get('permissions');
-        
+
         if (!$permissions) {
             return false;
         }

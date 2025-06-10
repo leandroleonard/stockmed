@@ -30,40 +30,67 @@
 
                 </div>
                 <div class="card-body">
-                    <form action="#" class="row">
-                        <div class="form-group col-md-6">
-                            <label class="form-label" for="nome">Nome</label>
-                            <input type="text" class="form-control" id="nome"
-                                placeholder="Nome do cliente">
+                    <form method="post" action="<?= base_url('dashboard/clients/submit') ?>" class="row">
+                        <?= csrf_field() ?>
+
+
+                        <?php if (session()->get('success')): ?>
+                            <div class="alert alert-success"><?= session()->get('success') ?></div>
+                        <?php endif; ?>
+
+                        <?php if (session()->get('error')): ?>
+                            <div class="alert alert-danger"><?= session()->get('error') ?></div>
+                        <?php endif; ?>
+
+                        <?php if ($errors = session('errors')): ?>
+                            <div class="alert alert-danger">
+                                <?php foreach ($errors as $error): ?>
+                                    <?= esc($error) ?><br>
+                                <?php endforeach ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="first_name">Nome</label>
+                                    <input type="text" class="form-control" id="first_name" name="first_name"
+                                        placeholder="Nome" value="<?= old('first_name') ?>">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label" for="last_name">Sobrenome</label>
+                                    <input type="text" class="form-control" id="last_name" name="last_name"
+                                        placeholder="Sobrenome" value="<?= old('last_name') ?>">
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-group col-md-6">
                             <label class="form-label" for="email">Email</label>
-                            <input type="email" class="form-control" id="email"
-                                placeholder="Email do cliente">
+                            <input type="email" class="form-control" id="email" name="email"
+                                placeholder="Email do cliente" value="<?= old('email') ?>">
                         </div>
 
                         <div class="form-group col-md-6">
-                            <label class="form-label" for="nif">NIF</label>
-                            <input type="text" class="form-control" id="email"
-                                placeholder="0000000000XX00">
+                            <label class="form-label" for="phone">Telefone</label>
+                            <input type="tel" class="form-control" id="phone" name="phone"
+                                placeholder="921252910" minlength="9" maxlength="9" value="<?= old('phone') ?>">
                         </div>
 
                         <div class="form-group col-md-6">
-                            <label class="form-label" for="forma_pagamento_id">Forma de pagamento</label>
-                            <select name="forma_pagamento_id" id="forma_pagamento_id" class="form-control">
-                                <option>Selecione a forma</option>
-                            </select>
+                            <label class="form-label" for="address">Endereço</label>
+                            <input type="text" class="form-control" id="address" name="address"
+                                placeholder="Morro Bento, 123 - Centro" value="<?= old('address') ?>">
                         </div>
 
                         <div class="form-group col-12">
                             <label class="form-label" for="obs">Observação</label>
-                            <textarea name="obs" id="obs" class="form-control" rows="4"></textarea>
+                            <textarea id="obs" class="form-control" name="notes" rows="4"><?= old('notes') ?></textarea>
                         </div>
 
                         <div class="form-group col-12">
                             <button type="submit" class="btn btn-primary mb-4">Criar</button>
-
                         </div>
                     </form>
                 </div>

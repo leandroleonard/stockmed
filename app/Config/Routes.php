@@ -14,6 +14,7 @@ $routes->group('/dashboard', ['filter' => 'auth'], function ($routes) {
     $routes->group('clients', function($routes){
         $routes->get('/', 'CustomerController::index');
         $routes->get('create', 'CustomerController::create');
+        $routes->post('submit', 'Entities\CustomerController::create');
     });
     $routes->get('buy', 'BuyController::index');
     $routes->get('sales', 'SalesController::index');
@@ -24,4 +25,4 @@ $routes->get('login', 'Auth\AuthController::login');
 $routes->post('login', 'Auth\AuthController::authenticate');
 $routes->get('logout', 'Auth\AuthController::logout');
 
-include 'RoutesTest.php';
+// include 'RoutesTest.php';
