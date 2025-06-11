@@ -139,7 +139,7 @@ class CustomerController extends BaseController
                 ]);
             } else {
                 echo "<pre>";
-                
+
                 return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
             }
         }
@@ -178,8 +178,8 @@ class CustomerController extends BaseController
                     'data' => ['id' => $customerId, 'customer_code' => $data['customer_code']]
                 ]);
             } else {
-                // Redireciona com mensagem de sucesso e os dados do cliente
-                return redirect()->back()->withInput()->with('success', 'Cliente criado com sucesso!');
+
+                return redirect()->to(base_url('dashboard/clients/') . $data['customer_code'])->withInput()->with('success', 'Cliente criado com sucesso!');
             }
         }
 
@@ -197,102 +197,105 @@ class CustomerController extends BaseController
     /**
      * Atualiza cliente
      */
-    public function update($id)
+    public function update()
     {
+        $request = service('request');
+        $wantsJson = strpos($request->getHeaderLine('Accept'), 'application/json') !== false;
+
         if (!$this->hasPermission('customers_edit')) {
-            return $this->response->setStatusCode(403)->setJSON([
-                'success' => false,
-                'message' => 'Sem permissão para editar clientes'
-            ]);
+            if ($wantsJson) {
+                return $this->response->setStatusCode(403)->setJSON([
+                    'success' => false,
+                    'message' => 'Sem permissão para editar clientes'
+                ]);
+            } else {
+                // Redireciona com mensagem de erro
+                return redirect()->back()->with('error', 'Sem permissão para editar clientes');
+            }
         }
 
-        $customer = $this->customerModel->find($id);
+        $id = $request->getPost('id');
+        // echo "<pre>";
+        // exit(var_dump($id));
+        $customer = $this->customerModel->where('customer_code', $id)->first();
         if (!$customer) {
-            return $this->response->setStatusCode(404)->setJSON([
-                'success' => false,
-                'message' => 'Cliente não encontrado'
-            ]);
+            if ($wantsJson) {
+                return $this->response->setStatusCode(404)->setJSON([
+                    'success' => false,
+                    'message' => 'Cliente não encontrado'
+                ]);
+            } else {
+                return redirect()->back()->with('error', 'Cliente não encontrado');
+            }
         }
 
         $rules = [
-            'name' => 'required|max_length[255]',
-            'customer_type' => 'required|in_list[individual,company]',
-            'document_number' => 'permit_empty|max_length[20]',
+            'first_name' => 'required|max_length[255]',
+            'last_name' => 'required|max_length[255]',
             'email' => 'permit_empty|valid_email|max_length[255]',
-            'phone' => 'permit_empty|max_length[20]',
-            'mobile' => 'permit_empty|max_length[20]',
+            'phone' => 'permit_empty|max_length[9]',
             'address' => 'permit_empty|string',
             'city' => 'permit_empty|max_length[100]',
-            'state' => 'permit_empty|max_length[100]',
             'postal_code' => 'permit_empty|max_length[20]',
-            'country' => 'permit_empty|max_length[100]',
-            'birth_date' => 'permit_empty|valid_date',
-            'gender' => 'permit_empty|in_list[M,F,Other]',
             'notes' => 'permit_empty|string'
         ];
 
         if (!$this->validate($rules)) {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Dados inválidos',
-                'errors' => $this->validator->getErrors()
-            ]);
-        }
-
-        // Verificar documento duplicado
-        $documentNumber = $this->request->getPost('document_number');
-        if (!empty($documentNumber)) {
-            $existing = $this->customerModel->where('document_number', $documentNumber)
-                ->where('id !=', $id)
-                ->first();
-            if ($existing) {
+            if ($wantsJson) {
                 return $this->response->setJSON([
                     'success' => false,
-                    'message' => 'Já existe outro cliente com este documento'
+                    'message' => 'Dados inválidos',
+                    'errors' => $this->validator->getErrors()
                 ]);
+            } else {
+                echo "<pre>";
+
+                return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
             }
         }
 
+
         $data = [
-            'name' => $this->request->getPost('name'),
-            'customer_type' => $this->request->getPost('customer_type'),
-            'document_number' => $documentNumber,
+            'first_name' => $this->request->getPost('first_name'),
+            'last_name' => $this->request->getPost('last_name'),
             'email' => $this->request->getPost('email'),
             'phone' => $this->request->getPost('phone'),
-            'mobile' => $this->request->getPost('mobile'),
             'address' => $this->request->getPost('address'),
             'city' => $this->request->getPost('city'),
-            'state' => $this->request->getPost('state'),
-            'postal_code' => $this->request->getPost('postal_code'),
-            'country' => $this->request->getPost('country'),
-            'birth_date' => $this->request->getPost('birth_date') ?: null,
-            'gender' => $this->request->getPost('gender'),
-            'notes' => $this->request->getPost('notes')
+            'notes' => $this->request->getPost('notes'),
         ];
 
-        $updated = $this->customerModel->update($id, $data);
+        $updated = $this->customerModel->update($customer['id'], $data);
 
         if ($updated) {
-            // Log atualização
             $this->activityModel->logActivity(
                 session()->get('user_id'),
-                'Cliente atualizado: ' . $data['name'],
+                'Cliente atualizado: ' . $data['first_name'],
                 'customers',
                 $id,
                 $customer,
                 $data
             );
 
-            return $this->response->setJSON([
-                'success' => true,
-                'message' => 'Cliente atualizado com sucesso'
-            ]);
+            if ($wantsJson) {
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => 'Cliente atualizado com sucesso',
+                ]);
+            } else {
+                return redirect()->to(base_url('dashboard/clients/') . $customer['customer_code'])->withInput()->with('success', 'Cliente atualizado com sucesso!');
+            }
         }
 
-        return $this->response->setJSON([
-            'success' => false,
-            'message' => 'Erro ao atualizar cliente'
-        ]);
+        if ($wantsJson) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Erro ao actualizar cliente'
+            ]);
+        } else {
+            // Redireciona com mensagem de erro
+            return redirect()->back()->withInput()->with('error', 'Erro ao actualizar cliente');
+        }
     }
 
     /**
@@ -324,7 +327,7 @@ class CustomerController extends BaseController
             // Log alteração
             $this->activityModel->logActivity(
                 session()->get('user_id'),
-                "Cliente {$action}: " . $customer['name'],
+                "Cliente {$action}: " . $customer['first_name'],
                 'customers',
                 $id
             );

@@ -53,7 +53,7 @@
                                         <td><?= $customer['email'] ?></td>
                                         <td><?= $customer['phone'] ?></td>
                                         <td>
-                                            <a href="#" class="btn btn-sm btn-primary">Editar</a>
+                                            <a href="<?= base_url('dashboard/clients/') . $customer['customer_code'] ?>" class="btn btn-sm btn-primary">Editar</a>
                                         </td>
                                     </tr>
                                 <?php endforeach ?>

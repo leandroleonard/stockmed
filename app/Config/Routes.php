@@ -15,6 +15,8 @@ $routes->group('/dashboard', ['filter' => 'auth'], function ($routes) {
         $routes->get('/', 'CustomerController::index');
         $routes->get('create', 'CustomerController::create');
         $routes->post('submit', 'Entities\CustomerController::create');
+        $routes->post('update', 'Entities\CustomerController::update');
+        $routes->get('(:any)', 'CustomerController::update/$1');
     });
     $routes->get('buy', 'BuyController::index');
     $routes->get('sales', 'SalesController::index');
