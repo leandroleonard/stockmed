@@ -45,15 +45,17 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Paracetamos</td>
-                                    <td>100</td>
-                                    <td>Xarope</td>
-                                    <td>2.000</td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-primary">Ver</a>
-                                    </td>
-                                </tr>
+                                <?php foreach ($stockList as $product): ?>
+                                    <tr>
+                                        <td><?= $product['product_name'] ?></td>
+                                        <td><?= $product['quantity_available'] ?></td>
+                                        <td><?= $product['category_name'] ?></td>
+                                        <td><?= $product['selling_price'] ?></td>
+                                        <td>
+                                            <a href="#" class="btn btn-sm btn-primary">Ver</a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach ?>
                                 <tr>
                                     <td>Aspirina</td>
                                     <td>200</td>

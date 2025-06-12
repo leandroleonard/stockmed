@@ -64,8 +64,6 @@
                         <a href="#!" class="pc-link"><span class="pc-micon"><i class="fa fa-archive"></i></span><span class="pc-mtext">
                                 Artigos</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
                         <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="<?= base_url('dashboard/artigos/marcas-modelo') ?>">Marcas & Modelos</a></li>
-                            <li class="pc-item"><a class="pc-link" href="<?= base_url('dashboard/tipo-artigos') ?>">Tipos de artigos</a></li>
                             <li class="pc-item"><a class="pc-link" href="<?= base_url('dashboard/stock') ?>">Stock</a></li>
                         </ul>
                     </li>
