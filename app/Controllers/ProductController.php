@@ -3,17 +3,40 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\ManufacturerModel;
+use App\Models\ProductBatchModel;
+use App\Models\ProductModel;
+use App\Models\StockLevelModel;
+use App\Models\StockMovementModel;
+use App\Models\SupplierModel;
+use App\Models\WarehouseModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class ProductController extends BaseController
 {
+    private WarehouseModel $warehouseModel;
+    private ManufacturerModel $manufacturerModel;
+    private SupplierModel $supplierModel;
+    private ProductModel $productModel;
+    private ProductBatchModel $productBatchModel;
+    private StockLevelModel $stockLevelModel;
+    private StockMovementModel $stockMovementModel;
+
+    public function __construct()
+    {
+        $this->warehouseModel = new WarehouseModel();
+        $this->manufacturerModel = new ManufacturerModel();
+        $this->supplierModel = new SupplierModel();
+        $this->productModel = new ProductModel();
+        $this->productBatchModel = new ProductBatchModel();
+        $this->stockMovementModel = new StockMovementModel();
+        $this->stockLevelModel = new StockLevelModel();
+
+    }
     public function index()
     {
         $stockModel = new \App\Models\StockLevelModel();
-        $productModel = new \App\Models\ProductModel();
-        $warehouseModel = new \App\Models\WarehouseModel();
 
-        // Consulta: todos os produtos com quantidade disponível > 0
         $builder = $stockModel->select('stock_levels.*, products.name as product_name, products.product_code, product_batches.selling_price, warehouses.name as warehouse_name, product_categories.name as category_name')
             ->join('products', 'products.id = stock_levels.product_id')
             ->join('product_batches', 'product_batches.product_id = products.id')
@@ -24,10 +47,125 @@ class ProductController extends BaseController
 
         $stockList = $builder->findAll();
 
-        // echo "<pre>";
-        // var_dump($stockList);
-        // exit;
-
         return view('dashboard/product/index',['stockList' => $stockList]);
+    }
+
+    public function form()
+    {
+        $warehouses = $this->warehouseModel->findAll();
+        $manufacturers = $this->manufacturerModel->findAll();
+        $suppliers = $this->supplierModel->findAll();
+
+        return view('dashboard/product/form', ['warehouses' => $warehouses, 'manufacturers' => $manufacturers, 'suppliers' => $suppliers]);
+    }
+
+    public function submit()
+    {
+        $rules = [
+            'name'               => 'required|max_length[200]',
+            'manufacturer_id'    => 'permit_empty|integer',
+            'batch_number'       => 'required|max_length[100]',
+            'supplier_id'        => 'required|integer',
+            'manufacture_date'   => 'permit_empty|valid_date',
+            'expiry_date'        => 'required|valid_date',
+            'quantity_received'  => 'required|integer|greater_than[0]',
+            'cost_price'         => 'required|decimal',
+            'selling_price'      => 'required|decimal',
+            'warehouse_id'       => 'required|integer',
+        ];
+
+        if (! $this->validate($rules)) {
+            return redirect()->back()->withInput()
+                   ->with('errors', $this->validator->getErrors());
+        }
+
+        $productM   = new ProductModel();
+        $batchM     = new ProductBatchModel();
+        $stockM     = new StockLevelModel();
+        $movementM  = new StockMovementModel();
+        $db         = \Config\Database::connect();
+
+        $db->transStart();
+        try {
+
+            $product = null;
+
+            if($this->request->getPost('product_code'))
+                $product = $productM->where('product_code', $this->request->getPost('product_code'))
+                            ->first();
+
+            if (! $product) {
+                $productId = $productM->insert([
+                    'name'            => $this->request->getPost('name'),
+                    'manufacturer_id' => $this->request->getPost('manufacturer_id'),
+                    'is_active'       => true
+                ]);
+            } else {
+                $productId = $product['id'];
+            }
+
+            $batchId = $batchM->insert([
+                'batch_number'         => $this->request->getPost('batch_number'),
+                'product_id'           => $productId,
+                'supplier_id'          => $this->request->getPost('supplier_id'),
+                'manufacture_date'     => $this->request->getPost('manufacture_date'),
+                'expiry_date'          => $this->request->getPost('expiry_date'),
+                'quantity_received'    => $this->request->getPost('quantity_received'),
+                'quantity_remaining'   => $this->request->getPost('quantity_received'),
+                'cost_price'           => $this->request->getPost('cost_price'),
+                'selling_price'        => $this->request->getPost('selling_price'),
+                'warehouse_id'         => $this->request->getPost('warehouse_id'),
+                'quality_status'       => 'approved'
+            ]);
+
+            $stockRow = $stockM->where([
+                            'product_id'   => $productId,
+                            'warehouse_id' => $this->request->getPost('warehouse_id')
+                        ])->first();
+
+            if ($stockRow) {
+                $stockM->update(
+                    $stockRow['id'],
+                    ['quantity_available' => $stockRow['quantity_available']
+                                          + $this->request->getPost('quantity_received')]
+                );
+            } else {
+                $stockM->insert([
+                    'product_id'        => $productId,
+                    'warehouse_id'      => $this->request->getPost('warehouse_id'),
+                    'quantity_available'=> $this->request->getPost('quantity_received'),
+                    'quantity_reserved' => 0,
+                    'quantity_on_order' => 0
+                ]);
+            }
+
+            $movementM->insert([
+                'product_id'    => $productId,
+                'batch_id'      => $batchId,
+                'warehouse_id'  => $this->request->getPost('warehouse_id'),
+                'movement_type' => 'entrada',
+                'quantity'      => $this->request->getPost('quantity_received'),
+                'reference_type'=> 'compra',
+                'reference_id'  => null,
+                'cost_price'    => $this->request->getPost('cost_price'),
+                'selling_price' => $this->request->getPost('selling_price'),
+                'notes'         => 'Entrada inicial de stock',
+                'user_id'       => session('user_id')
+            ]);
+
+        } catch (DatabaseException $e) {
+            $db->transRollback();
+            return redirect()->back()->withInput()
+                   ->with('error', 'Erro DB: ' . $e->getMessage());
+        }
+
+        $db->transComplete();
+        if (! $db->transStatus()) {
+            return redirect()->back()->withInput()
+                   ->with('error', 'Não foi possível salvar o produto.');
+        }
+
+        return redirect()->to('/stock')
+               ->with('success', 'Produto cadastrado e estoque atualizado!');
     }
 }

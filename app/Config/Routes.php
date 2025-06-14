@@ -10,7 +10,11 @@ $routes->get('/', 'Home::index');
 $routes->group('/dashboard', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'DashboardController::index');
     $routes->get('storage', 'StorageController::index');
-    $routes->get('stock', 'ProductController::index');
+    $routes->group('stock', function($routes){
+        $routes->get('/', 'ProductController::index');
+        $routes->get('create', 'ProductController::form');
+        $routes->post('add', 'ProductController::submit');
+    });
     $routes->group('clients', function($routes){
         $routes->get('/', 'CustomerController::index');
         $routes->get('create', 'CustomerController::create');
