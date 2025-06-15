@@ -54,20 +54,6 @@ class WarehouseModel extends Model
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert = ['generateWarehouseCode'];
-
-    /**
-     * Gera código do armazém automaticamente
-     */
-    protected function generateWarehouseCode(array $data)
-    {
-        if (empty($data['data']['warehouse_code'])) {
-            $lastWarehouse = $this->orderBy('id', 'DESC')->first();
-            $nextId = $lastWarehouse ? $lastWarehouse['id'] + 1 : 1;
-            $data['data']['warehouse_code'] = 'ARM' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
-        }
-        return $data;
-    }
 
     /**
      * Busca armazéns ativos
@@ -80,10 +66,11 @@ class WarehouseModel extends Model
     /**
      * Busca armazém com gerente
      */
-    public function getWarehouseWithManager($id)
+    public function getWarehouseWithManager($warehouseCode)
     {
         return $this->select('warehouses.*, CONCAT(users.first_name, " ", users.last_name) as manager_name')
                     ->join('users', 'users.id = warehouses.manager_id', 'left')
-                    ->find($id);
+                    ->where(['warehouse_code' => $warehouseCode])
+                    ->first();
     }
 }

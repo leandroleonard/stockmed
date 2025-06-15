@@ -9,7 +9,14 @@ $routes->get('/', 'Home::index');
 
 $routes->group('/dashboard', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'DashboardController::index');
-    $routes->get('storage', 'StorageController::index');
+
+    $routes->group('storage', function($routes){
+        $routes->get('/', 'StorageController::index');
+        $routes->get('create', 'StorageController::form');
+        $routes->get('update/(:any)', 'StorageController::form/$1');
+        $routes->post('submit', 'StorageController::submit');
+    });
+
     $routes->group('stock', function($routes){
         $routes->get('/', 'ProductController::index');
         $routes->get('create', 'ProductController::form');

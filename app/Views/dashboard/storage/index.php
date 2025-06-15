@@ -31,7 +31,7 @@
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h5>Armazens</h5>
 
-                    <a href="#" class="btn btn-primary btn-sm"><span class="fa fa-plus me-2"></span> Criar</a>
+                    <a href="<?= base_url('dashboard/storage/create') ?>" class="btn btn-primary btn-sm"><span class="fa fa-plus me-2"></span> Criar</a>
                 </div>
                 <div class="card-body">
                     <div class="dt-responsive table-responsive">
