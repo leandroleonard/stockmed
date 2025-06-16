@@ -40,7 +40,27 @@ class StorageController extends BaseController
     {
         $data = $this->request->getPost();
 
+        if (isset($data['warehouse_code'])) {
+            $warehouse = $this->warehouseModel->where(['warehouse_code' => $data['warehouse_code']])->first();
+
+            if (!$warehouse) return redirect()->to(base_url('dashboard/storage/create'))->with('error', 'Armazem não actualizado');
+
+            if (!$this->warehouseModel->update($warehouse['id'], $data)) {
+                echo "<pre>";
+                exit(var_dump($this->warehouseModel->errors()));
+            }
+
+            return redirect()->to(base_url('dashboard/storage/create'))->with('error', $this->warehouseModel->errors())->withInput();
+
+            return redirect()->to(base_url('dashboard/storage/update/' . $data['warehouse_code']))->with('success', 'Armazem actualizado');
+        }
+
+
+        $warehouse = $this->warehouseModel->insert($data);
+
         echo "<pre>";
-        exit(var_dump($data));
+        exit(var_dump($this->warehouseModel->errors()));
+
+        return redirect()->to(base_url('dashboard/storage/update/' . $warehouse['warehouse_code']))->with('success', 'Armazem cadastrado');
     }
 }
