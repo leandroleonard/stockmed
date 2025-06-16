@@ -43,24 +43,27 @@ class StorageController extends BaseController
         if (isset($data['warehouse_code'])) {
             $warehouse = $this->warehouseModel->where(['warehouse_code' => $data['warehouse_code']])->first();
 
-            if (!$warehouse) return redirect()->to(base_url('dashboard/storage/create'))->with('error', 'Armazem não actualizado');
-
-            if (!$this->warehouseModel->update($warehouse['id'], $data)) {
-                echo "<pre>";
-                exit(var_dump($this->warehouseModel->errors()));
+            if (!$warehouse) {
+                return redirect()->to(base_url('dashboard/storage/create'))->with('error', 'Armazem não actualizado');
             }
 
-            return redirect()->to(base_url('dashboard/storage/create'))->with('error', $this->warehouseModel->errors())->withInput();
+            $data['id'] = $warehouse['id'];
 
-            return redirect()->to(base_url('dashboard/storage/update/' . $data['warehouse_code']))->with('success', 'Armazem actualizado');
+            if (!$this->warehouseModel->update($warehouse['id'], $data)) {
+                return redirect()->to(base_url('dashboard/storage/create'))
+                    ->with('error', $this->warehouseModel->errors())
+                    ->withInput();
+            }
+
+            return redirect()->to(base_url('dashboard/storage/update/' . $data['warehouse_code']))
+                ->with('success', 'Armazem actualizado');
         }
 
 
-        $warehouse = $this->warehouseModel->insert($data);
 
-        echo "<pre>";
-        exit(var_dump($this->warehouseModel->errors()));
+        if ($warehouse = $this->warehouseModel->createWithKey($data))
+            return redirect()->to(base_url('dashboard/storage/update/' . $warehouse['warehouse_code']))->with('success', 'Armazem cadastrado');
 
-        return redirect()->to(base_url('dashboard/storage/update/' . $warehouse['warehouse_code']))->with('success', 'Armazem cadastrado');
+        return redirect()->to(base_url('dashboard/storage/create'))->with('error', $this->warehouseModel->errors())->withInput();
     }
 }

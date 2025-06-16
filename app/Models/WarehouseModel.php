@@ -35,6 +35,7 @@ class WarehouseModel extends Model
 
     // Validation
     protected $validationRules = [
+        'id' => 'integer',
         'warehouse_code' => 'permit_empty|is_unique[warehouses.warehouse_code,id,{id}]',
         'name' => 'required|max_length[100]',
         'manager_id' => 'permit_empty|integer',
@@ -72,5 +73,13 @@ class WarehouseModel extends Model
                     ->join('users', 'users.id = warehouses.manager_id', 'left')
                     ->where(['warehouse_code' => $warehouseCode])
                     ->first();
+    }
+
+    public function createWithKey($data)
+    {
+        if($warehouseId = self::insert($data))
+            return self::find($warehouseId);
+
+        return self::errors();
     }
 }
