@@ -67,7 +67,7 @@ class ProductModel extends Model
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert = ['generateProductCode'];
+    protected $beforeInsert = ['generateProductCode', 'generateBarcode'];
 
     /**
      * Gera código do produto automaticamente
@@ -78,6 +78,14 @@ class ProductModel extends Model
             $lastProduct = $this->orderBy('id', 'DESC')->first();
             $nextId = $lastProduct ? $lastProduct['id'] + 1 : 1;
             $data['data']['product_code'] = 'PROD' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
+        }
+        return $data;
+    }
+
+    protected function generateBarcode(array $data)
+    {
+        if (empty($data['data']['barcode'])) {            
+            $data['data']['barcode'] = rand(1111111111111, 9999999999999);
         }
         return $data;
     }
