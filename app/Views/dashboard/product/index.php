@@ -53,28 +53,10 @@
                                         <td><?= $product['category_name'] ?></td>
                                         <td><?= $product['selling_price'] ?></td>
                                         <td>
-                                            <a href="#" class="btn btn-sm btn-primary">Ver</a>
+                                            <a href="<?= base_url('dashboard/stock/' . $product['product_code']) ?>" class="btn btn-sm btn-primary">Ver</a>
                                         </td>
                                     </tr>
                                 <?php endforeach ?>
-                                <tr>
-                                    <td>Aspirina</td>
-                                    <td>200</td>
-                                    <td>Comprimido</td>
-                                    <td>1.500</td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-primary">Ver</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Be-u-ron</td>
-                                    <td>50</td>
-                                    <td>Comprimido</td>
-                                    <td>5.000</td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-primary">Ver</a>
-                                    </td>
-                                </tr>
                             </tbody>
                             <tfoot>
                                 <tr>

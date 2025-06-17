@@ -31,7 +31,6 @@ class ProductController extends BaseController
         $this->productBatchModel = new ProductBatchModel();
         $this->stockMovementModel = new StockMovementModel();
         $this->stockLevelModel = new StockLevelModel();
-
     }
     public function index()
     {
@@ -47,16 +46,24 @@ class ProductController extends BaseController
 
         $stockList = $builder->findAll();
 
-        return view('dashboard/product/index',['stockList' => $stockList]);
+        return view('dashboard/product/index', ['stockList' => $stockList]);
     }
 
-    public function form()
+    public function form($productCode = null)
     {
+
         $warehouses = $this->warehouseModel->findAll();
         $manufacturers = $this->manufacturerModel->findAll();
         $suppliers = $this->supplierModel->findAll();
 
-        return view('dashboard/product/form', ['warehouses' => $warehouses, 'manufacturers' => $manufacturers, 'suppliers' => $suppliers]);
+        $product = null;
+
+        if ($productCode)
+            $product = $this->productModel->getProductWithDetails($productCode);
+
+        // dd($product);
+
+        return view('dashboard/product/form', ['warehouses' => $warehouses, 'manufacturers' => $manufacturers, 'suppliers' => $suppliers, 'product' => $product]);
     }
 
     public function submit()
@@ -76,7 +83,7 @@ class ProductController extends BaseController
 
         if (! $this->validate($rules)) {
             return redirect()->back()->withInput()
-                   ->with('errors', $this->validator->getErrors());
+                ->with('errors', $this->validator->getErrors());
         }
 
         $productM   = new ProductModel();
@@ -85,14 +92,17 @@ class ProductController extends BaseController
         $movementM  = new StockMovementModel();
         $db         = \Config\Database::connect();
 
+        $data = $this->request->getPost();
+
         $db->transStart();
         try {
 
             $product = null;
 
-            if($this->request->getPost('product_code'))
+            if ($this->request->getPost('product_code'))
                 $product = $productM->where('product_code', $this->request->getPost('product_code'))
-                            ->first();
+                    ->first();
+
 
             if (! $product) {
                 $productId = $productM->insert([
@@ -100,6 +110,7 @@ class ProductController extends BaseController
                     'manufacturer_id' => $this->request->getPost('manufacturer_id'),
                     'is_active'       => true
                 ]);
+
             } else {
                 $productId = $product['id'];
             }
@@ -119,21 +130,21 @@ class ProductController extends BaseController
             ]);
 
             $stockRow = $stockM->where([
-                            'product_id'   => $productId,
-                            'warehouse_id' => $this->request->getPost('warehouse_id')
-                        ])->first();
+                'product_id'   => $productId,
+                'warehouse_id' => $this->request->getPost('warehouse_id')
+            ])->first();
 
             if ($stockRow) {
                 $stockM->update(
                     $stockRow['id'],
                     ['quantity_available' => $stockRow['quantity_available']
-                                          + $this->request->getPost('quantity_received')]
+                        + $this->request->getPost('quantity_received')]
                 );
             } else {
                 $stockM->insert([
                     'product_id'        => $productId,
                     'warehouse_id'      => $this->request->getPost('warehouse_id'),
-                    'quantity_available'=> $this->request->getPost('quantity_received'),
+                    'quantity_available' => $this->request->getPost('quantity_received'),
                     'quantity_reserved' => 0,
                     'quantity_on_order' => 0
                 ]);
@@ -145,27 +156,29 @@ class ProductController extends BaseController
                 'warehouse_id'  => $this->request->getPost('warehouse_id'),
                 'movement_type' => 'entrada',
                 'quantity'      => $this->request->getPost('quantity_received'),
-                'reference_type'=> 'compra',
+                'reference_type' => 'compra',
                 'reference_id'  => null,
                 'cost_price'    => $this->request->getPost('cost_price'),
                 'selling_price' => $this->request->getPost('selling_price'),
                 'notes'         => 'Entrada inicial de stock',
                 'user_id'       => session('user_id')
             ]);
-
         } catch (DatabaseException $e) {
             $db->transRollback();
             return redirect()->back()->withInput()
-                   ->with('error', 'Erro DB: ' . $e->getMessage());
+                ->with('error', 'Erro DB: ' . $e->getMessage());
         }
 
         $db->transComplete();
         if (! $db->transStatus()) {
             return redirect()->back()->withInput()
-                   ->with('error', 'Não foi possível salvar o produto.');
+                ->with('error', 'Não foi possível salvar o produto.');
         }
 
-        return redirect()->to('/stock')
-               ->with('success', 'Produto cadastrado e estoque atualizado!');
+        $product = $this->productModel->where(['id' => $productId])->first();
+
+
+        return redirect()->to(base_url('dashboard/stock/' . $product['product_code']))
+            ->with('success', 'Produto cadastrado e estoque atualizado!');
     }
 }

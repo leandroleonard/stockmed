@@ -52,7 +52,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="name">Nome do Produto</label>
                                 <input type="text" class="form-control" id="name" name="name"
-                                    placeholder="Nome do produto" value="<?= old('name') ?>" required>
+                                    placeholder="Nome do produto" value="<?= $product ? $product['name'] : old('name') ?>" required>
                             </div>
                         </div>
 
@@ -60,6 +60,9 @@
                             <div class="form-group">
                                 <label class="form-label" for="manufacturer_id">ID do Fabricante</label>
                                 <select class="form-control" id="manufacturer_id" name="manufacturer_id">
+                                    <?php if ($product): ?>
+                                        <option value="<?= $product['manufacturer_id'] ?>"><?= $product['manufacturer_name'] ?></option>
+                                    <?php endif ?>
                                     <?php foreach ($manufacturers as $manufacturer): ?>
                                         <option value="<?= $manufacturer['id'] ?>"><?= $manufacturer['name'] ?></option>
                                     <?php endforeach ?>
@@ -71,7 +74,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="batch_number">Lote</label>
                                 <input type="text" class="form-control" id="batch_number" name="batch_number"
-                                    placeholder="Nº Lote" value="<?= old('batch_number') ?>" required>
+                                    placeholder="Nº Lote" value="<?= $product ? $product['batch_number'] : old('batch_number') ?>" required>
                             </div>
                         </div>
 
@@ -79,6 +82,9 @@
                             <div class="form-group">
                                 <label class="form-label" for="supplier_id">ID do Fornecedor</label>
                                 <select class="form-control" class="form-control" id="supplier_id" name="supplier_id">
+                                    <?php if ($product): ?>
+                                        <option value="<?= $product['supplier_id'] ?>"><?= $product['supplier_name'] ?></option>
+                                    <?php endif ?>
                                     <?php foreach ($suppliers as $supplier): ?>
                                         <option value="<?= $supplier['id'] ?>"><?= $supplier['company_name'] ?></option>
                                     <?php endforeach ?>
@@ -90,7 +96,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="manufacture_date">Data de Fabricação</label>
                                 <input type="date" class="form-control" id="manufacture_date" name="manufacture_date"
-                                    value="<?= old('manufacture_date') ?>">
+                                    value="<?= $product ? $product['manufacture_date'] : old('manufacture_date') ?>">
                             </div>
                         </div>
 
@@ -98,7 +104,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="expiry_date">Data de Expiração</label>
                                 <input type="date" class="form-control" id="expiry_date" name="expiry_date"
-                                    value="<?= old('expiry_date') ?>" required>
+                                    value="<?= $product ? $product['expiry_date'] : old('expiry_date') ?>" required>
                             </div>
                         </div>
 
@@ -106,7 +112,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="quantity_received">Quantidade Recebida</label>
                                 <input type="number" class="form-control" id="quantity_received" name="quantity_received"
-                                    placeholder="Quantidade" value="<?= old('quantity_received') ?>" required min="1">
+                                    placeholder="Quantidade" value="<?= $product ? $product['quantity_received'] : old('quantity_received') ?>" required min="1">
                             </div>
                         </div>
 
@@ -114,7 +120,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="cost_price">Preço de Custo</label>
                                 <input type="number" step="0.01" class="form-control" id="cost_price" name="cost_price"
-                                    placeholder="Preço de Custo" value="<?= old('cost_price') ?>" required min="0">
+                                    placeholder="Preço de Custo" value="<?= $product ? $product['cost_price'] : old('cost_price') ?>" required min="0">
                             </div>
                         </div>
 
@@ -122,7 +128,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="selling_price">Preço de Venda</label>
                                 <input type="number" step="0.01" class="form-control" id="selling_price" name="selling_price"
-                                    placeholder="Preço de Venda" value="<?= old('selling_price') ?>" required min="0">
+                                    placeholder="Preço de Venda" value="<?= $product ? $product['selling_price'] : old('selling_price') ?>" required min="0">
                             </div>
                         </div>
 

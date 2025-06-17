@@ -21,6 +21,7 @@ $routes->group('/dashboard', ['filter' => 'auth'], function ($routes) {
         $routes->get('/', 'ProductController::index');
         $routes->get('create', 'ProductController::form');
         $routes->post('add', 'ProductController::submit');
+        $routes->get('(:any)', 'ProductController::form/$1');
     });
     $routes->group('clients', function($routes){
         $routes->get('/', 'CustomerController::index');
