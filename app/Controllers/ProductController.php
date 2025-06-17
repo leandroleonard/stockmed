@@ -7,6 +7,7 @@ use App\Models\ManufacturerModel;
 use App\Models\ProductBatchModel;
 use App\Models\ProductCategoryModel;
 use App\Models\ProductModel;
+use App\Models\PurchaseOrderModel;
 use App\Models\StockLevelModel;
 use App\Models\StockMovementModel;
 use App\Models\SupplierModel;
@@ -94,6 +95,7 @@ class ProductController extends BaseController
         $batchM     = new ProductBatchModel();
         $stockM     = new StockLevelModel();
         $movementM  = new StockMovementModel();
+        $purchaseM  = new PurchaseOrderModel();
         $db         = \Config\Database::connect();
 
         $data = $this->request->getPost();
@@ -112,12 +114,14 @@ class ProductController extends BaseController
                 $productId = $productM->insert([
                     'name'            => $this->request->getPost('name'),
                     'manufacturer_id' => $this->request->getPost('manufacturer_id'),
-                    'is_active'       => true
-                ]);
+                    'is_active'       => true,
+                    'generic_name'    => $this->request->getPost('generic_name'),
+                    'category_id'     => $this->request->getPost('category_id'),
+                    'description'     => $this->request->getPost('description'),
 
+                ]);
             } else {
                 $productId = $product['id'];
-                
             }
 
             $batchId = $batchM->insert([
@@ -133,6 +137,21 @@ class ProductController extends BaseController
                 'warehouse_id'         => $this->request->getPost('warehouse_id'),
                 'quality_status'       => 'approved'
             ]);
+
+            if (!$this->request->getPost('product_code')) {
+                $purchaseId = $purchaseM->insert([
+                    'supplier_id'           => $this->request->getPost('supplier_id'),
+                    'warehouse_id'          => $this->request->getPost('warehouse_id'),
+                    'order_date'            => date('Y-m-d'),
+                    'expected_delivery_at'  => date('Y-m-d'),
+                    'status'                => 'aprovada',
+                    'subtotal'              => $this->request->getPost('cost_price') * $this->request->getPost('quantity_received'),
+                    'total'                 => $this->request->getPost('cost_price') * $this->request->getPost('quantity_received'),
+                    'tax_amount'            => 0,
+                    'discount_amount'       => 0,
+                    'notes'                 => $this->request->getPost('description'),
+                ]);
+            }
 
             $stockRow = $stockM->where([
                 'product_id'   => $productId,
