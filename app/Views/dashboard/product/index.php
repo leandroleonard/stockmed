@@ -31,6 +31,7 @@
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h5>Stock</h5>
 
+                    <a href="<?= base_url('dashboard/stock/create') ?>" class="btn btn-primary btn-sm"><span class="fa fa-plus me-2"></span> Adicionar</a>
                 </div>
                 <div class="card-body">
                     <div class="dt-responsive table-responsive">
