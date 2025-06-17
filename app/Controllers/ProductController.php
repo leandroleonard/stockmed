@@ -179,6 +179,6 @@ class ProductController extends BaseController
 
 
         return redirect()->to(base_url('dashboard/stock/' . $product['product_code']))
-            ->with('success', 'Produto cadastrado e estoque atualizado!');
+            ->with('success', 'Estoque atualizado!');
     }
 }
