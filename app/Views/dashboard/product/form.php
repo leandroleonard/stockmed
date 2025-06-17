@@ -58,6 +58,14 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label class="form-label" for="generic_name">Nome generico</label>
+                                <input type="text" class="form-control" id="generic_name" name="generic_name"
+                                    placeholder="Nome generico" value="<?= $product ? $product['generic_name'] : old('generic_name') ?>">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 <label class="form-label" for="manufacturer_id">ID do Fabricante</label>
                                 <select class="form-control" id="manufacturer_id" name="manufacturer_id">
                                     <?php if ($product): ?>
@@ -75,6 +83,20 @@
                                 <label class="form-label" for="batch_number">Lote</label>
                                 <input type="text" class="form-control" id="batch_number" name="batch_number"
                                     placeholder="Nº Lote" value="<?= $product ? $product['batch_number'] : old('batch_number') ?>" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label" for="category_id">Categoria</label>
+                                <select class="form-control" class="form-control" id="category_id" name="category_id">
+                                    <?php if ($product): ?>
+                                        <option value="<?= $product['category_id'] ?>"><?= $product['category_name'] ?></option>
+                                    <?php endif ?>
+                                    <?php foreach ($categories as $category): ?>
+                                        <option value="<?= $category['id'] ?>"><?= $category['name'] ?></option>
+                                    <?php endforeach ?>
+                                </select>
                             </div>
                         </div>
 
@@ -140,6 +162,13 @@
                                         <option value="<?= $warehouse['id'] ?>"><?= $warehouse['name'] ?></option>
                                     <?php endforeach ?>
                                 </select>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label" for="description">Descrição</label>
+                                <textarea name="description" id="description" class="form-control"><?= $product ? esc($product['description']): old('description') ?></textarea>
                             </div>
                         </div>
 

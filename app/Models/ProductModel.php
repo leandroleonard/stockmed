@@ -107,7 +107,7 @@ class ProductModel extends Model
      */
     public function getProductWithDetails($code)
     {
-        return $this->select('products.*, product_categories.name as category_name, manufacturers.id as manufacturer_id, manufacturers.name as manufacturer_name, product_batches.batch_number, product_batches.manufacture_date, product_batches.expiry_date, product_batches.quantity_received, product_batches.cost_price, product_batches.selling_price, suppliers.id as supplier_id, suppliers.company_name as supplier_name')
+        return $this->select('products.*, product_categories.id as category_id, product_categories.name as category_name, manufacturers.id as manufacturer_id, manufacturers.name as manufacturer_name, product_batches.batch_number, product_batches.manufacture_date, product_batches.expiry_date, product_batches.quantity_received, product_batches.cost_price, product_batches.selling_price, suppliers.id as supplier_id, suppliers.company_name as supplier_name')
                     ->join('product_categories', 'product_categories.id = products.category_id', 'left')
                     ->join('product_batches', 'product_batches.product_id = products.id')
                     ->join('suppliers', 'product_batches.supplier_id = suppliers.id')

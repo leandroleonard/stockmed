@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\ManufacturerModel;
 use App\Models\ProductBatchModel;
+use App\Models\ProductCategoryModel;
 use App\Models\ProductModel;
 use App\Models\StockLevelModel;
 use App\Models\StockMovementModel;
@@ -21,6 +22,7 @@ class ProductController extends BaseController
     private ProductBatchModel $productBatchModel;
     private StockLevelModel $stockLevelModel;
     private StockMovementModel $stockMovementModel;
+    private ProductCategoryModel $productCategoryModel;
 
     public function __construct()
     {
@@ -31,6 +33,7 @@ class ProductController extends BaseController
         $this->productBatchModel = new ProductBatchModel();
         $this->stockMovementModel = new StockMovementModel();
         $this->stockLevelModel = new StockLevelModel();
+        $this->productCategoryModel = new ProductCategoryModel();
     }
     public function index()
     {
@@ -55,6 +58,7 @@ class ProductController extends BaseController
         $warehouses = $this->warehouseModel->findAll();
         $manufacturers = $this->manufacturerModel->findAll();
         $suppliers = $this->supplierModel->findAll();
+        $categories = $this->productCategoryModel->findAll();
 
         $product = null;
 
@@ -63,7 +67,7 @@ class ProductController extends BaseController
 
         // dd($product);
 
-        return view('dashboard/product/form', ['warehouses' => $warehouses, 'manufacturers' => $manufacturers, 'suppliers' => $suppliers, 'product' => $product]);
+        return view('dashboard/product/form', ['warehouses' => $warehouses, 'manufacturers' => $manufacturers, 'suppliers' => $suppliers, 'product' => $product, 'categories' => $categories]);
     }
 
     public function submit()
@@ -113,6 +117,7 @@ class ProductController extends BaseController
 
             } else {
                 $productId = $product['id'];
+                
             }
 
             $batchId = $batchM->insert([
