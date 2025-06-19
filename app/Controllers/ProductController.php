@@ -138,7 +138,7 @@ class ProductController extends BaseController
                 'quality_status'       => 'approved'
             ]);
 
-            if (!$this->request->getPost('product_code')) {
+            if (!isset($data['product_code'])) {
                 $purchaseId = $purchaseM->insert([
                     'supplier_id'           => $this->request->getPost('supplier_id'),
                     'warehouse_id'          => $this->request->getPost('warehouse_id'),
