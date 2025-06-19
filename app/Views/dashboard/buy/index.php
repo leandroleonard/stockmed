@@ -45,15 +45,17 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <?php foreach($data as $purchase): ?>
                             <tr>
-                                <td>COMP001</td>
-                                <td>Farmaco Angola</td>
-                                <td>Paracetamol</td>
-                                <td>2025-03-12</td>
+                                <td><?= $purchase['order_number'] ?></td>
+                                <td><?= $purchase['company_name'] ?></td>
+                                <td><?= resumeText($purchase['notes']) ?></td>
+                                <td><?= $purchase['created_at'] ?></td>
                                 <td>
                                     <a href="#" class="btn btn-sm btn-primary">Ver</a>
                                 </td>
                             </tr>
+                            <?php endforeach ?>
                             <tr>
                                 <td>COMP002</td>
                                 <td>MedLife</td>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Products;
+namespace App\Controllers\Orders;
 
 use App\Models\PurchaseOrderModel;
 use App\Models\PurchaseOrderItemModel;
@@ -22,7 +22,7 @@ class PurchaseOrderController extends Controller
 
     public function index()
     {
-        $data = $this->model->select('purchase_orders.*, suppliers.name as supplier_name')
+        $data = $this->model->select('purchase_orders.*, suppliers.company_name')
                            ->join('suppliers', 'suppliers.id = purchase_orders.supplier_id')
                            ->findAll();
         return $this->respond($data);
