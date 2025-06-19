@@ -247,4 +247,18 @@ class ProductController extends BaseController
 
         return view('dashboard/stock/moviments', ['movements' => $movements]);
     }
+
+    public function stockLevelsList()
+    {
+        $stockLevelModel = new StockLevelModel();
+
+        $stockLevels = $stockLevelModel
+            ->select('stock_levels.*, products.name as product_name, warehouses.name as warehouse_name')
+            ->join('products', 'products.id = stock_levels.product_id', 'left')
+            ->join('warehouses', 'warehouses.id = stock_levels.warehouse_id', 'left')
+            ->orderBy('products.name', 'ASC')
+            ->findAll();
+
+        return view('dashboard/stock/levels', ['stockLevels' => $stockLevels]);
+    }
 }

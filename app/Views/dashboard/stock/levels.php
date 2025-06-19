@@ -23,18 +23,16 @@
                         <th>Armazém</th>
                         <th>Quantidade Disponível</th>
                         <th>Quantidade Reservada</th>
-                        <th>Quantidade em Pedido</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (!empty($stockLevels)): ?>
                         <?php foreach ($stockLevels as $stock): ?>
-                            <tr class="<?= ($stock['quantity_available'] < 10) ? 'low-stock' : '' ?>">
+                            <tr class="<?= ($stock['quantity_available'] < 50) ? 'low-stock' : '' ?>">
                                 <td><?= esc($stock['product_name']) ?></td>
                                 <td><?= esc($stock['warehouse_name']) ?></td>
                                 <td><?= esc($stock['quantity_available']) ?></td>
                                 <td><?= esc($stock['quantity_reserved']) ?></td>
-                                <td><?= esc($stock['quantity_on_order']) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>

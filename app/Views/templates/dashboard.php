@@ -68,7 +68,7 @@
 
                             <li class="pc-item"><a class="pc-link" href="<?= base_url('dashboard/stock/movements') ?>">Movimentos</a></li>
 
-                            <li class="pc-item"><a class="pc-link" href="<?= base_url('dashboard/levels') ?>">Controle</a></li>
+                            <li class="pc-item"><a class="pc-link" href="<?= base_url('dashboard/stock/levels') ?>">Controle</a></li>
                             
                         </ul>
                     </li>
