@@ -29,7 +29,7 @@
                     <h5>Nova Venda</h5>
                 </div>
                 <div class="card-body">
-                    <form method="post" action="<?= base_url('sales/store') ?>" class="row" id="saleForm">
+                    <form method="post" action="<?= base_url('dashboard/sales/store') ?>" class="row" id="saleForm">
                         <?= csrf_field() ?>
 
                         <?php if (session()->get('success')): ?>
@@ -61,10 +61,25 @@
                             </select>
                         </div>
 
-                        <!-- Armazém -->
+                        <!-- Barcode -->
                         <div class="form-group col-md-6 mb-3">
                             <label for="barcode_input" class="form-label">Código de Barras</label>
                             <input type="text" id="barcode_input" class="form-control" placeholder="Digite ou escaneie o código de barras">
+                        </div>
+
+                        <div class="form-group col-md-6 mb-3">
+                            <label for="payment_method" class="form-label">Método de Pagamento</label>
+                            <select name="payment_method" id="payment_method" class="form-control">
+                                    <option value="dinheiro">Cash</option>
+                                    <option value="cartao">Cartão</option>
+                                    <option value="transferencia">Transferência</option>
+                                    <option value="cheque">Cheque</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-6 mb-3">
+                            <label for="notes" class="form-label">Observação</label>
+                            <input type="text" id="notes" class="form-control" name="notes">
                         </div>
 
 
@@ -89,7 +104,7 @@
                                                 <option value="">Selecione o produto</option>
                                                 <?php foreach ($products as $product): ?>
                                                     <option
-                                                        value="<?= esc($product['id']) ?>"
+                                                        value="<?= esc($product['product_id']) ?>"
                                                         data-price="<?= esc($product['selling_price']) ?>"
                                                         data-stock="<?= esc($product['quantity_available'] ?? 0) ?>">
                                                         <?= esc($product['product_name']) ?>
@@ -207,7 +222,7 @@
                     <option value="">Selecione o produto</option>
                     <?php foreach ($products as $product): ?>
                         <option 
-                            value="<?= esc($product['id']) ?>" 
+                            value="<?= esc($product['product_id']) ?>" 
                             data-price="<?= esc($product['selling_price']) ?>" 
                             data-stock="<?= esc($product['quantity_available'] ?? 0) ?>"
                         >

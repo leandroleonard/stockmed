@@ -37,7 +37,7 @@ class SaleModel extends Model
 
     // Validation
     protected $validationRules = [
-        'sale_number' => 'required|is_unique[sales.sale_number,id,{id}]',
+        'sale_number' => 'is_unique[sales.sale_number,id,{id}]',
         'warehouse_id' => 'required|integer',
         'payment_method' => 'required|in_list[dinheiro,cartao,transferencia,cheque,credito]',
         'payment_status' => 'required|in_list[pago,pendente,parcial]',

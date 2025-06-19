@@ -25,69 +25,86 @@
 
 
     <div class="row">
-    <div class="col-sm-12">
-        <div class="card">
-            <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Vendas</h5>
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h5>Vendas</h5>
 
-                <a href="<?= base_url('dashboard/sales/create') ?>" class="btn btn-sm btn-primary"> <span class="fa fa-plus me-2"></span>Nova Venda</a>
-            </div>
-            <div class="card-body">
-                <div class="dt-responsive table-responsive">
-                    <table id="tabela-vendas" class="table table-striped table-bordered nowrap">
-                        <thead>
-                            <tr>
-                                <th>Referência</th>
-                                <th>Cliente</th>
-                                <th>Total</th>
-                                <th>Data</th>
-                                <th><span class="fa fa-cog text-primary"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>VEN001</td>
-                                <td>João Manuel</td>
-                                <td>5.000 Kz</td>
-                                <td>2025-04-02</td>
-                                <td>
-                                    <a href="#" class="btn btn-sm btn-primary">Ver</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>VEN002</td>
-                                <td>Ana Silva</td>
-                                <td>3.500 Kz</td>
-                                <td>2025-04-05</td>
-                                <td>
-                                    <a href="#" class="btn btn-sm btn-primary">Ver</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>VEN003</td>
-                                <td>Carlos Pedro</td>
-                                <td>6.200 Kz</td>
-                                <td>2025-04-09</td>
-                                <td>
-                                    <a href="#" class="btn btn-sm btn-primary">Ver</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Referência</th>
-                                <th>Cliente</th>
-                                <th>Total</th>
-                                <th>Data</th>
-                                <th><span class="fa fa-cog text-primary"></span></th>
-                            </tr>
-                        </tfoot>
-                    </table>
+                    <a href="<?= base_url('dashboard/sales/create') ?>" class="btn btn-sm btn-primary"> <span class="fa fa-plus me-2"></span>Nova Venda</a>
+                </div>
+
+                <?php if (session()->get('success')): ?>
+                    <div class="alert alert-success"><?= session()->get('success') ?></div>
+                <?php endif; ?>
+
+                <?php if (session()->get('error')): ?>
+                    <div class="alert alert-danger"><?= session()->get('error') ?></div>
+                <?php endif; ?>
+
+                <?php if ($errors = session('errors')): ?>
+                    <div class="alert alert-danger">
+                        <?php foreach ($errors as $error): ?>
+                            <?= esc($error) ?><br>
+                        <?php endforeach ?>
+                    </div>
+                <?php endif; ?>
+                
+                <div class="card-body">
+                    <div class="dt-responsive table-responsive">
+                        <table id="tabela-vendas" class="table table-striped table-bordered nowrap">
+                            <thead>
+                                <tr>
+                                    <th>Referência</th>
+                                    <th>Cliente</th>
+                                    <th>Total</th>
+                                    <th>Data</th>
+                                    <th><span class="fa fa-cog text-primary"></span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>VEN001</td>
+                                    <td>João Manuel</td>
+                                    <td>5.000 Kz</td>
+                                    <td>2025-04-02</td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-primary">Ver</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>VEN002</td>
+                                    <td>Ana Silva</td>
+                                    <td>3.500 Kz</td>
+                                    <td>2025-04-05</td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-primary">Ver</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>VEN003</td>
+                                    <td>Carlos Pedro</td>
+                                    <td>6.200 Kz</td>
+                                    <td>2025-04-09</td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-primary">Ver</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Referência</th>
+                                    <th>Cliente</th>
+                                    <th>Total</th>
+                                    <th>Data</th>
+                                    <th><span class="fa fa-cog text-primary"></span></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 
 </div>
