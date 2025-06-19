@@ -27,7 +27,14 @@ class SalesController extends BaseController
 
     public function index()
     {
-        return view('dashboard/sales/index');
+        $saleModel = new \App\Models\SaleModel();
+
+        $builder = $saleModel->select('sales.*, customers.id as customer_id, customers.first_name, customers.last_name')
+            ->join('customers', 'customers.id = sales.customer_id')
+            ->orderBy('sales.sale_date', 'DESC');
+
+
+        return view('dashboard/sales/index', ['sales' => $builder->findAll()]);
     }
 
     public function create()
@@ -171,5 +178,65 @@ class SalesController extends BaseController
             $db->transRollback();
             return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
+    }
+
+    public function details($id)
+    {
+        $saleModel = new \App\Models\SaleModel();
+        $saleItemModel = new \App\Models\SaleItemModel();
+
+        $sale = $saleModel->select('sales.*, customers.first_name, customers.last_name, warehouses.name as warehouse_name, users.first_name as cashier_name')
+            ->join('customers', 'customers.id = sales.customer_id')
+            ->join('warehouses', 'warehouses.id = sales.warehouse_id')
+            ->join('users', 'users.id = sales.cashier_id')
+            ->where('sales.sale_number', $id)
+            ->first();
+
+        if (!$sale) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Venda não encontrada');
+        }
+
+        $items = $saleItemModel->select('sale_items.*, products.name as product_name')
+            ->join('products', 'products.id = sale_items.product_id')
+            ->where('sale_id', $sale['id'])
+            ->findAll();
+
+        return view('dashboard/sales/details', [
+            'sale' => $sale,
+            'items' => $items
+        ]);
+    }
+
+    public function download($id)
+    {
+        $saleModel = new \App\Models\SaleModel();
+        $saleItemModel = new \App\Models\SaleItemModel();
+
+        $sale = $saleModel->select('sales.*, customers.name as customer_name, warehouses.name as warehouse_name, users.username as cashier_name')
+            ->join('customers', 'customers.id = sales.customer_id')
+            ->join('warehouses', 'warehouses.id = sales.warehouse_id')
+            ->join('users', 'users.id = sales.cashier_id')
+            ->where('sales.id', $id)
+            ->first();
+
+        if (!$sale) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Venda não encontrada');
+        }
+
+        $items = $saleItemModel->select('sale_items.*, products.name as product_name')
+            ->join('products', 'products.id = sale_items.product_id')
+            ->where('sale_id', $id)
+            ->findAll();
+
+        $html = view('sales/invoice_pdf', [
+            'sale' => $sale,
+            'items' => $items
+        ]);
+
+        $dompdf = new \Dompdf\Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        $dompdf->stream("fatura_venda_{$id}.pdf", ['Attachment' => true]);
     }
 }

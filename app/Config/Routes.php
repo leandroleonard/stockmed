@@ -37,6 +37,7 @@ $routes->group('/dashboard', ['filter' => 'auth'], function ($routes) {
         $routes->get('/', 'SalesController::index');
         $routes->get('create', 'SalesController::create');
         $routes->post('store', 'SalesController::store');
+        $routes->get('details/(:any)', 'SalesController::details/$1');
     });
     $routes->get('suppliers', 'SupplierController::index');
 });

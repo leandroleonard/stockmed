@@ -48,7 +48,7 @@
                         <?php endforeach ?>
                     </div>
                 <?php endif; ?>
-                
+
                 <div class="card-body">
                     <div class="dt-responsive table-responsive">
                         <table id="tabela-vendas" class="table table-striped table-bordered nowrap">
@@ -62,33 +62,17 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>VEN001</td>
-                                    <td>João Manuel</td>
-                                    <td>5.000 Kz</td>
-                                    <td>2025-04-02</td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-primary">Ver</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>VEN002</td>
-                                    <td>Ana Silva</td>
-                                    <td>3.500 Kz</td>
-                                    <td>2025-04-05</td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-primary">Ver</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>VEN003</td>
-                                    <td>Carlos Pedro</td>
-                                    <td>6.200 Kz</td>
-                                    <td>2025-04-09</td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-primary">Ver</a>
-                                    </td>
-                                </tr>
+                                <?php foreach ($sales as $sale): ?>
+                                    <tr>
+                                        <td><?= $sale['sale_number'] ?></td>
+                                        <td><?= $sale['first_name'] . ' ' . $sale['last_name'] ?></td>
+                                        <td><?= $sale['total_amount'] ?></td>
+                                        <td><?= $sale['sale_date'] ?></td>
+                                        <td>
+                                            <a href="<?= base_url('dashboard/sales/details/' . $sale['sale_number']) ?>" class="btn btn-sm btn-primary">Ver</a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach ?>
                             </tbody>
                             <tfoot>
                                 <tr>
