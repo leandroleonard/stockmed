@@ -30,7 +30,7 @@
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h5>Vendas</h5>
 
-                <a href="#" class="btn btn-sm btn-primary"> <span class="fa fa-plus me-2"></span>Nova Venda</a>
+                <a href="<?= base_url('dashboard/sales/create') ?>" class="btn btn-sm btn-primary"> <span class="fa fa-plus me-2"></span>Nova Venda</a>
             </div>
             <div class="card-body">
                 <div class="dt-responsive table-responsive">

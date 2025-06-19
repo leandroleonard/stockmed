@@ -205,4 +205,30 @@ class ProductController extends BaseController
         return redirect()->to(base_url('dashboard/stock/' . $product['product_code']))
             ->with('success', 'Estoque atualizado!');
     }
+
+    public function getProductByBarcode($barcode)
+    {
+        $product = $this->productModel->where('barcode', $barcode)->where('is_active', true)->first();
+
+        if (!$product) {
+            return $this->response->setStatusCode(404)->setJSON(['error' => 'Produto não encontrado']);
+        }
+
+        $stockModel = new \App\Models\StockLevelModel();
+        
+        $builder = $stockModel->select('stock_levels.*, products.name as product_name, products.product_code, products.form, products.dosage, products.barcode, product_batches.selling_price, warehouses.name as warehouse_name, product_categories.name as category_name')
+            ->join('products', 'products.id = stock_levels.product_id')
+            ->join('product_batches', 'product_batches.product_id = products.id')
+            ->join('product_categories', 'products.category_id = product_categories.id')
+            ->join('warehouses', 'warehouses.id = stock_levels.warehouse_id')
+            ->where('stock_levels.quantity_available >', 0)
+            ->where(['stock_levels.product_id' => $product['id']])->first();
+            
+        return $this->response->setJSON([
+            'id' => $product['id'],
+            'name' => $product['name'],
+            'selling_price' => $builder['selling_price'],
+            'stock_available' => $builder['quantity_available'] ?? 0
+        ]);
+    }
 }
