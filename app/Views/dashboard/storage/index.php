@@ -34,6 +34,22 @@
                     <a href="<?= base_url('dashboard/storage/create') ?>" class="btn btn-primary btn-sm"><span class="fa fa-plus me-2"></span> Criar</a>
                 </div>
                 <div class="card-body">
+                    <?php if (session()->get('success')): ?>
+                            <div class="alert alert-success"><?= session()->get('success') ?></div>
+                        <?php endif; ?>
+
+                        <?php if (session()->get('error')): ?>
+                            <div class="alert alert-danger"><?= session()->get('error') ?></div>
+                        <?php endif; ?>
+
+                        <?php if ($errors = session('errors')): ?>
+                            <div class="alert alert-danger">
+                                <?php foreach ($errors as $error): ?>
+                                    <?= esc($error) ?><br>
+                                <?php endforeach ?>
+                            </div>
+                        <?php endif; ?>
+                        
                     <div class="dt-responsive table-responsive">
                         <table id="simpletable" class="table table-striped table-bordered nowrap">
                             <thead>
@@ -51,7 +67,7 @@
                                         <td><?= $warehouse['name'] ?></td>
                                         <td><?= $warehouse['description'] ?></td>
                                         <td>
-                                            <a href="#" class="btn btn-sm btn-primary">Editar</a>
+                                            <a href="<?= base_url('dashboard/storage/update/' . $warehouse['warehouse_code']) ?>" class="btn btn-sm btn-primary">Editar</a>
                                         </td>
                                     </tr>
                                 <?php endforeach ?>
