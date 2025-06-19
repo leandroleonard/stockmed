@@ -98,10 +98,6 @@
             <h3>Clientes e Fornecedores</h3>
             <p>Gerencie o cadastro de clientes e fornecedores de forma simples e eficiente.</p>
         </div>
-        <div class="feature">
-            <h3>Relatórios Inteligentes</h3>
-            <p>Gere relatórios detalhados para tomada de decisão rápida e assertiva.</p>
-        </div>
     </div>
 
     <div class="footer">
