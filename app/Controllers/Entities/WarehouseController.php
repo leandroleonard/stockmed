@@ -402,50 +402,35 @@ class WarehouseController extends BaseController
             ]);
         }
 
-        $warehouse = $this->warehouseModel->find($id);
+        $warehouse = $this->warehouseModel->where(['warehouse_code' => $id])->first();
         if (!$warehouse) {
-            return $this->response->setStatusCode(404)->setJSON([
-                'success' => false,
-                'message' => 'Armazém não encontrado'
-            ]);
-        }
-
-        // Não permitir excluir armazém principal
-        if ($warehouse['warehouse_type'] === 'main') {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Não é possível excluir o armazém principal'
-            ]);
+            return redirect()->to(base_url("dashboard/storage/update/$id"))
+                ->with('error', 'Armazem não encontrado');
         }
 
         // Verificar se há stock
         $stockModel = new \App\Models\StockLevelModel();
-        $stockCount = $stockModel->where('warehouse_id', $id)
-                                ->where('quantity >', 0)
+        $stockCount = $stockModel->where('warehouse_id', $warehouse['id'])
+                                ->where('quantity_available >', 0)
                                 ->countAllResults();
 
         if ($stockCount > 0) {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => "Não é possível excluir. Armazém possui {$stockCount} produto(s) em estoque."
-            ]);
+            return redirect()->to(base_url("dashboard/storage/update/$id"))
+                ->with('error', "Não é possível excluir. Armazém possui {$stockCount} produto(s) em estoque.");
         }
 
         // Verificar movimentações de stock
         $movementModel = new \App\Models\StockMovementModel();
-        $movementsCount = $movementModel->where('warehouse_id', $id)->countAllResults();
+        $movementsCount = $movementModel->where('warehouse_id', $warehouse['id'])->countAllResults();
 
         if ($movementsCount > 0) {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => "Não é possível excluir. Armazém possui {$movementsCount} movimentação(ões) de stock."
-            ]);
+            return redirect()->to(base_url("dashboard/storage/update/$id"))
+                ->with('error', "Não é possível excluir. Armazém possui {$movementsCount} movimentação(ões) de stock.");
         }
 
-        $deleted = $this->warehouseModel->delete($id);
+        $deleted = $this->warehouseModel->delete($warehouse['id']);
 
         if ($deleted) {
-            // Log exclusão
             $this->activityModel->logActivity(
                 session()->get('user_id'),
                 'Armazém excluído: ' . $warehouse['name'],
@@ -455,16 +440,12 @@ class WarehouseController extends BaseController
                 null
             );
 
-            return $this->response->setJSON([
-                'success' => true,
-                'message' => 'Armazém excluído com sucesso'
-            ]);
+            return redirect()->to(base_url("dashboard/storage"))
+                ->with('success', "Armazém excluído com sucesso");
         }
 
-        return $this->response->setJSON([
-            'success' => false,
-            'message' => 'Erro ao excluir armazém'
-        ]);
+        return redirect()->to(base_url("dashboard/storage/update/$id"))
+                ->with('error', "Erro ao excluir armazém");
     }
 
     /**

@@ -11,8 +11,8 @@
                         <h5 class="m-b-10">Armazens</h5>
                     </div>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript: void(0)">Armazens</a></li>
-                        <li class="breadcrumb-item"><a href="javascript: void(0)">Criar</a></li>
+                        <li class="breadcrumb-item"><a href="<?= base_url('dashboard/storage') ?>">Armazens</a></li>
+                        <li class="breadcrumb-item"><a href="javascript: void(0)"><?= $warehouse ? 'Actualizar Armazen' : 'Criar' ?></a></li>
                     </ul>
                 </div>
             </div>
@@ -26,6 +26,13 @@
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h5>Novo Armazem</h5>
+
+                    <button class="btn btn-sm btn-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#confirmDeleteModal"
+                        data-delete-url="<?= base_url('dashboard/storage/delete/' . $warehouse['warehouse_code']) ?>">
+                        Eliminar
+                    </button>
                 </div>
                 <div class="card-body">
                     <form method="post" action="<?= base_url('dashboard/storage/submit') ?>" class="row">
@@ -102,10 +109,41 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="confirmDeleteLabel">Confirmar Eliminação</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    Tem certeza que deseja eliminar este armazen?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Sim, eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 <?= $this->endSection() ?>
 
 <?= $this->section('push-javascript') ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+    const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+    confirmDeleteModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const url = button.getAttribute('data-delete-url');
+        const confirmBtn = confirmDeleteModal.querySelector('#confirmDeleteBtn');
+        confirmBtn.setAttribute('href', url);
+    });
+</script>
+
 
 <?= $this->endSection() ?>

@@ -14,6 +14,7 @@ $routes->group('/dashboard', ['filter' => 'auth'], function ($routes) {
         $routes->get('/', 'StorageController::index');
         $routes->get('create', 'StorageController::form');
         $routes->get('update/(:any)', 'StorageController::form/$1');
+        $routes->get('delete/(:any)', 'Entities\WarehouseController::delete/$1');
         $routes->post('submit', 'StorageController::submit');
     });
 
