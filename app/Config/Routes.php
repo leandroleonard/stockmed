@@ -22,7 +22,7 @@ $routes->group('/dashboard', ['filter' => 'auth'], function ($routes) {
         $routes->get('/', 'ProductController::index');
         $routes->get('create', 'ProductController::form');
         $routes->post('add', 'ProductController::submit');
-        $routes->get('movements', 'ProductController::movements');
+        $routes->get('movements', 'ProductController::movementsList');
         $routes->get('levels', 'ProductController::levels');
         $routes->get('(:any)', 'ProductController::form/$1');
     });

@@ -215,7 +215,7 @@ class ProductController extends BaseController
         }
 
         $stockModel = new \App\Models\StockLevelModel();
-        
+
         $builder = $stockModel->select('stock_levels.*, products.name as product_name, products.product_code, products.form, products.dosage, products.barcode, product_batches.selling_price, warehouses.name as warehouse_name, product_categories.name as category_name')
             ->join('products', 'products.id = stock_levels.product_id')
             ->join('product_batches', 'product_batches.product_id = products.id')
@@ -223,12 +223,28 @@ class ProductController extends BaseController
             ->join('warehouses', 'warehouses.id = stock_levels.warehouse_id')
             ->where('stock_levels.quantity_available >', 0)
             ->where(['stock_levels.product_id' => $product['id']])->first();
-            
+
         return $this->response->setJSON([
             'id' => $product['id'],
             'name' => $product['name'],
             'selling_price' => $builder['selling_price'],
             'stock_available' => $builder['quantity_available'] ?? 0
         ]);
+    }
+
+    public function movementsList()
+    {
+        $stockMovementModel = new StockMovementModel();
+
+        $movements = $stockMovementModel
+            ->select('stock_movements.*, products.name as product_name, product_batches.batch_number, warehouses.name as warehouse_name, users.username as user_name')
+            ->join('products', 'products.id = stock_movements.product_id', 'left')
+            ->join('product_batches', 'product_batches.id = stock_movements.batch_id', 'left')
+            ->join('warehouses', 'warehouses.id = stock_movements.warehouse_id', 'left')
+            ->join('users', 'users.id = stock_movements.user_id', 'left')
+            ->orderBy('stock_movements.movement_date', 'DESC')
+            ->findAll();
+
+        return view('dashboard/stock/moviments', ['movements' => $movements]);
     }
 }
