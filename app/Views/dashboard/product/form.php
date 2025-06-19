@@ -140,6 +140,14 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label class="form-label" for="min_stock_level">Aviso de estoque</label>
+                                <input type="number" class="form-control" id="min_stock_level" name="min_stock_level"
+                                    placeholder="Baixa de estoque" value="<?= $product ? $product['min_stock_level'] : old('min_stock_level') ?>" required min="1">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 <label class="form-label" for="cost_price">Preço de Custo</label>
                                 <input type="number" step="0.01" class="form-control" id="cost_price" name="cost_price"
                                     placeholder="Preço de Custo" value="<?= $product ? $product['cost_price'] : old('cost_price') ?>" required min="0">
