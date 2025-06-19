@@ -64,6 +64,9 @@
             margin-bottom: 10px;
         }
         .footer {
+            position: absolute;
+            width: 100%;
+            bottom: 0;
             text-align: center;
             padding: 25px 0;
             background: #e0e0e0;
