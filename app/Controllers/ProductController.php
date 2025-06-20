@@ -260,5 +260,6 @@ class ProductController extends BaseController
             ->findAll();
 
         return view('dashboard/stock/levels', ['stockLevels' => $stockLevels]);
+        
     }
 }

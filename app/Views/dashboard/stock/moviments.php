@@ -11,7 +11,7 @@
 
     <div class="card">
         <div class="card-body table-responsive dt-responsive">
-            <table id="movements-table" class="table table-striped table-bordered nowrap">
+            <table id="" class="table table-striped table-bordered nowrap">
                 <thead>
                     <tr>
                         <th>Data</th>
