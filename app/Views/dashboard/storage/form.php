@@ -27,12 +27,15 @@
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h5>Novo Armazem</h5>
 
-                    <button class="btn btn-sm btn-danger"
-                        data-bs-toggle="modal"
-                        data-bs-target="#confirmDeleteModal"
-                        data-delete-url="<?= base_url('dashboard/storage/delete/' . $warehouse['warehouse_code']) ?>">
-                        Eliminar
-                    </button>
+                    <?php if ($warehouse): ?>
+                        <button class="btn btn-sm btn-danger"
+                            data-bs-toggle="modal"
+                            data-bs-target="#confirmDeleteModal"
+                            data-delete-url="<?= base_url('dashboard/storage/delete/' . $warehouse['warehouse_code']) ?>">
+                            Eliminar
+                        </button>
+                    <?php endif ?>
+
                 </div>
                 <div class="card-body">
                     <form method="post" action="<?= base_url('dashboard/storage/submit') ?>" class="row">
