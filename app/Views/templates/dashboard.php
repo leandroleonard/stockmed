@@ -254,47 +254,18 @@
                                 <div class="tab-pane fade show active" id="drp-tab-1" role="tabpanel" aria-labelledby="drp-t1" tabindex="0">
                                     <a href="#!" class="dropdown-item">
                                         <i class="ti ti-edit-circle"></i>
-                                        <span>Edit Profile</span>
+                                        <span>Editar perfil</span>
                                     </a>
                                     <a href="#!" class="dropdown-item">
                                         <i class="ti ti-user"></i>
-                                        <span>View Profile</span>
+                                        <span>Ver Perfil</span>
                                     </a>
-                                    <a href="#!" class="dropdown-item">
-                                        <i class="ti ti-clipboard-list"></i>
-                                        <span>Social Profile</span>
-                                    </a>
-                                    <a href="#!" class="dropdown-item">
-                                        <i class="ti ti-wallet"></i>
-                                        <span>Billing</span>
-                                    </a>
-                                    <a href="#!" class="dropdown-item">
+                                    <a href="<?= base_url('logout') ?>" class="dropdown-item">
                                         <i class="ti ti-power"></i>
                                         <span>Logout</span>
                                     </a>
                                 </div>
-                                <div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2" tabindex="0">
-                                    <a href="#!" class="dropdown-item">
-                                        <i class="ti ti-help"></i>
-                                        <span>Support</span>
-                                    </a>
-                                    <a href="#!" class="dropdown-item">
-                                        <i class="ti ti-user"></i>
-                                        <span>Account Settings</span>
-                                    </a>
-                                    <a href="#!" class="dropdown-item">
-                                        <i class="ti ti-lock"></i>
-                                        <span>Privacy Center</span>
-                                    </a>
-                                    <a href="#!" class="dropdown-item">
-                                        <i class="ti ti-messages"></i>
-                                        <span>Feedback</span>
-                                    </a>
-                                    <a href="#!" class="dropdown-item">
-                                        <i class="ti ti-list"></i>
-                                        <span>History</span>
-                                    </a>
-                                </div>
+                                
                             </div>
                         </div>
                     </li>
